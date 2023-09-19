@@ -58,4 +58,27 @@ public class LinkedList<E> {
         tail = nnd;
         return true;
     }
+
+    public E remove() {     // remove the last node
+        // what if list is empty
+        if (head == null) return null;
+
+        E delVal = tail.data;
+
+        // what if list has just one element
+        if (head == tail) {
+            head = tail = null;
+            return delVal;
+        }
+
+        // iterate to the second to last node
+        Node tnode = head;
+        while (tnode.next != tail) {
+            tnode = tnode.next;
+        }  
+        // when we exit the loop, tnode.next == tail
+        tail = tnode;
+        tnode.next = null;
+        return delVal;
+    }
 }
