@@ -11,17 +11,21 @@ public class DoublyLinkedList<E> {
     }
 
     Node head, tail;
+    int size;
 
     public DoublyLinkedList() {
         head = tail = null;
     }
 
     public int size() {
-        return -1;   // NEED TO IMPLEMENT
+        // midterm practice: write a method that
+        // iterates through the list and counts all nodes
+        return size;   // NEED TO IMPLEMENT
     }
 
     public boolean add(E elt) {
         Node nnd = new Node(elt);
+        size++;
         // what if the list is empty
         if (head == null) {
             head = tail = nnd;
@@ -38,6 +42,7 @@ public class DoublyLinkedList<E> {
         if (head == null) return null;
 
         E delVal = tail.data;
+        size--;
 
         // what if there is just one node
         if (head == tail) {
@@ -55,13 +60,19 @@ public class DoublyLinkedList<E> {
 
         // what if the list is empty
         if (index < 0 || index > size()) return new IndexOutOfBoundsException();
+        size++;
 
         // what if index = 0
         if (index == 0) {
-            nnd.next = head;
-            nnd.next.prev = nnd;        // can this be null? UP TO THIS 9/19
-            head = nnd;
+            nnd.next = head; // (1)
+            if (nnd.next != null) nnd.next.prev = nnd;   // (2)
+            else tail = head;
+            head = nnd; // (3)
+            return true;
         }
+
+        // what if index = size
+        if (index == size()) return add(elt);
 
         Node tnd = head;
         for (int i = 0; i < index-1; i++) tnd = tnd.next;
@@ -72,5 +83,19 @@ public class DoublyLinkedList<E> {
         nnd.next.prev = nnd;
         nnd.prev = tnd;
         nnd.prev.next = nnd;
+
+        return true;
     }
+
+    public E get(int index) {
+        if (index < 0 || index >= size()) throw new IndexOutOfBoundsException();
+        Node tnd = head;
+        for (int i = 0; i < index; i++) tnd = tnd.next;
+        // tnd is now pointing to the node at index
+        return tnd.data;
+    }
+
+    // midterm practice example: write a live insertion sort
+    // where new items keep coming in and they need to be 
+    // inserted into a list in sorted order
 }
