@@ -26,6 +26,32 @@ public class IteratorPractice {
         }
     }
 
+    // remove every other element of a list
+    public <E> void removeEveryOtherElement(List<E> lst) {
+        Iterator<E> it = lst.iterator();
+        while (it.hasNext()) {
+            it.next();
+            it.remove();
+            if(it.hasNext()) it.next();
+        }
+    }
+
+    // accumulate values of a list of integers
+    public Integer accumulate(List<Integer> intlist) {
+        ListIterator<Integer> lit = intlist.listIterator();
+        Integer sum = 0;
+        while (lit.hasNext()) {
+            sum += lit.next();
+            lit.set(sum);
+        } 
+        return sum;
+    }
+
+    // foreach
+    public <E> void forEachDemo(List<E> list) {
+        for (E elt : list) // doSomething
+    }
+
     // find a specific element and remove it
     public <E> boolean removeElement(Collection<E> c, E target) {
         Iterator<E> it = c.iterator();
