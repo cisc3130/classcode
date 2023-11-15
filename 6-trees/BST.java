@@ -152,6 +152,11 @@ public class BST<E extends Comparable<E>> {
 
         stree.printTree();
 
+        BST<String>.Iterator it = stree.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
+        }
+
     }
 
 }
