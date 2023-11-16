@@ -1,5 +1,7 @@
 import java.util.*;
+import java.util.stream.*;
 import java.io.*;
+
 
 public class SetPractice {
 
@@ -63,8 +65,33 @@ public class SetPractice {
         System.out.println(poem);
     }
 
+    public static void removeDuplicatesWithoutSorting() {
+        String poem = "on either side the river lie long fields of barley and of rye that clothe the wold and meet the sky and through the hill the road runs by to many towered camelot";
+        
+        // add all words in the string to a linked list
+        String[] words = poem.split(" ");
+        List<String> wordList = new LinkedList<>();
+        for (String w : words) wordList.add(w);
+
+        // iterate over the list. If a word has been seen before,
+        // remove it.
+        Set<String> seen = new TreeSet<>();
+        ListIterator<String> it = wordList.listIterator();
+        while (it.hasNext()) {
+            String w = it.next();
+            if (seen.contains(w)) {
+                it.remove();
+            } else {
+                seen.add(w);
+            }
+        }
+        String poemWithoutDuplicates = wordList.stream().collect(Collectors.joining(" "));
+        System.out.println(poem);
+        System.out.println(poemWithoutDuplicates);
+    }
+
 
     public static void main(String[] args) {
-        removeDuplicates();
+        removeDuplicatesWithoutSorting();
     }
 }
