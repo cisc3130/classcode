@@ -47,6 +47,39 @@ class Graph {
     State getState(String name) {
       return states.get(name);
     }
+
+    public static List<State> findPath(State s1, State s2) {
+        Stack<State> unvisited = new Stack<>();
+        Set<State> seen = new HashSet<>();
+        Map<State, State> parent = new HashMap<>();
+        unvisited.push(s1);
+        while (!unvisited.isEmpty()) {
+            State s = unvisited.pop();
+            if (s.equals(s2)) {
+                List<State> path = new LinkedList<>();
+                while (!s.equals(s1)) {
+                    path.add(0, s);
+                    s = parent.get(s);
+                }
+                return path;
+            } else {
+                for (State neighbor : s.neighbors) {
+                    if (!seen.contains(neighbor)) {
+                        unvisited.push(neighbor);
+                        seen.add(neighbor);
+                        parent.put(neighbor, s);
+                    }   
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String pathToString(List<State> path) {
+        return path.stream()
+            .map(s -> s.name)
+            .collect(Collectors.joining(" -> "));
+    }
 } // end Graph class
 
 // Main class
@@ -289,9 +322,19 @@ public class USStateGraph {
         return graph;
     } // end buildUSMap
 
+    
+
+    
+
 
     public static void main(String[] args) {
-        
+        Graph usgraph = USStateGraph.buildUSMap();
+        State s2 = usgraph.getState("California");
+        State ny = usgraph.getState("New York");
+        System.out.println(
+            Graph.pathToString(Graph.findPath(ny, s2))
+        );
+
     }
 
 }

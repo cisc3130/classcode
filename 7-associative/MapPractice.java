@@ -28,14 +28,16 @@ public class MapPractice {
     public static Map<Integer, List<String>> invertMap(Map<String, Integer> wordCounts) {
         Map<Integer, List<String>> invertedMap = new TreeMap<>();
         for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
-            if (invertedMap.containsKey(entry.getKey())) {
-                List<String> lst = invertedMap.get(entry.getKey());
-                lst.add(entry.getKey());
-            } else {
-                List<String> lst = new LinkedList<>();
-                lst.add(entry.getKey());
-                invertedMap.put(entry.getValue(), lst);
-            }
+            // if (invertedMap.containsKey(entry.getValue())) {
+            //     List<String> lst = invertedMap.get(entry.getValue());
+            //     lst.add(entry.getKey());
+            // } else {
+            //     List<String> lst = new LinkedList<>();
+            //     lst.add(entry.getKey());
+            //     invertedMap.put(entry.getValue(), lst);
+            // }
+            List<String> wordList = invertedMap.compute(entry.getValue(), (k, v) -> (v == null) ? new LinkedList<String>() : v);
+            wordList.add(entry.getKey());
         }
 
         for (Map.Entry<Integer, List<String>> entry : invertedMap.entrySet()) {
