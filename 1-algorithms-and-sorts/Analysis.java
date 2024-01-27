@@ -1,3 +1,5 @@
+//Name: Lifung Zhuo Feng
+
 public class Analysis {
 
     // print every element in an array
@@ -11,8 +13,15 @@ public class Analysis {
     }
 
 
-    // sum up all elements in an array
-    
+    // sum up all elements in an array with Linear algorithm
+    public int sumAllElement(int[] arr){
+        int sum = 0;
+        for (int element : arr){
+            sum += elelment;    
+        }
+        return sum;
+    }
+
 
     // see if an array contains any duplicates
     public boolean containsDuplicates(int[] arr) {
