@@ -38,6 +38,8 @@ public class Analysis {
             }
         }
 
+        return sum;
+
     }
 
 
