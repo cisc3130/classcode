@@ -14,12 +14,30 @@ public class Analysis {
 
 
     // sum up all elements in an array with Linear algorithm
-    public int sumAllElement(int[] arr){
+    public int sumAllElementsLinear(int[] arr) {
         int sum = 0;
-        for (int element : arr){
-            sum += elelment;    
+        
+        for (int element : arr) {
+            sum += element;
         }
+        
         return sum;
+        
+    }
+
+
+    // sum up all elements in an array with Quadratic algorithm
+    public int sumAllElementsQuadratic(int[] arr) {
+        int sum = 0;
+
+        for (int i = 0; i < arr.length - 1; i++) {
+            for (int j = i+1; j < arr.length; j++) {
+
+                sum += (arr[i] + arr[j]);
+
+            }
+        }
+
     }
 
 
