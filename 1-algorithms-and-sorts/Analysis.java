@@ -12,6 +12,13 @@ public class Analysis {
 
 
     // sum up all elements in an array
+    public int sumArray(int[] arr) {
+        int sum = 0;
+        for (int i = 0; i < arr.length; i++) {
+            sum += arr[i];
+        }
+        return sum;
+    }
     
 
     // see if an array contains any duplicates
