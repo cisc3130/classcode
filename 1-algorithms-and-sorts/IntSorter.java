@@ -16,7 +16,7 @@ public class IntSorter {
 
     public static int[] generateIntArray() { return generateIntArray(8); }
 
-    public static void printArr(int[] arr) {
+    public static void printArr(Object[] arr) {
         System.out.print("{ ");
         for (int i = 0; i < arr.length; i++) {
             System.out.print(arr[i] + " ");
