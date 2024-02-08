@@ -1,3 +1,5 @@
+import java.lang.*;
+
 public class ArrayList<E> {
     E[] data;
     int size;
@@ -26,7 +28,62 @@ public class ArrayList<E> {
     }
 
     public E removeLast() {
+        E last = data[size-1];
         size--;
+        return last;
+    }
+
+    public void add(int idx, E elt) {
+        if (idx < 0 || idx > size) throw new IndexOutOfBoundsException();
+        if (size == data.length) grow();
+        for (int i = size; i > idx; i--) {
+            data[i] = data[i-1];
+        }
+        data[idx] = elt;
+        size++;
+    }
+
+    public E remove(int idx) {
+        if (idx < 0 || idx >= size) throw new IndexOutOfBoundsException();
+        E toReturn = data[idx];
+        for (int i = idx; i < size-1; i++) {
+            data[i] = data[i+1];
+        }
+        size--;
+        return toReturn;
+    }
+
+    public E get(int idx) {
+        if (idx < 0 || idx >= size) throw new IndexOutOfBoundsException();
+        return data[idx];
+    }
+
+    public E set(int idx, E elt) {
+        if (idx < 0 || idx >= size) throw new IndexOutOfBoundsException();
+        E toReturn = data[idx];
+        data[idx] = elt;
+        return toReturn;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public static void main(String[] args) {
+        String[] strs = { "hello", "goodbye", "cat", "dog", "coffee", "computer"};
+        ArrayList<String> lst = new ArrayList<>(4);
+        lst.add("hello");
+        lst.add("goodbye");
+        lst.add("cat");
+        lst.removeLast();
+        lst.add("dog");
+        lst.add("computer");
+        lst.add(1, "coffee");
+        lst.remove(2);
     }
 
 }
