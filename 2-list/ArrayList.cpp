@@ -71,7 +71,7 @@ int main() {
     std::cout << list[1] << std::endl;
     list.printMemoryMap();
 
-    for (int i = 0; i < 20; i++) list.push_back(i);
+    for (int i = 0; i < 5; i++) list.push_back(i);
     list.printMemoryMap();
     return 0;
 }

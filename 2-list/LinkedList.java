@@ -7,10 +7,14 @@ public class LinkedList<E> {
     }
 
     Node head, tail;
+    int size;
+
 
     public boolean isEmpty() {
         return head == null;
     }
+
+    public int size() { return size; }
 
     public boolean addFirst(E elt) {
         // 1. allocate the new node
@@ -24,12 +28,14 @@ public class LinkedList<E> {
         head = nnd;
         // tail bookkeeping 
         if (head.next == null) tail = nnd;
+        size++;
         return true;
     }
 
     public boolean add(E elt) {
         // 1. allocate the new node
         Node nnd = new Node(elt);
+        size++;
         // edge case: what if the list is empty?
         if (head == null) {
             head = nnd;
@@ -63,19 +69,53 @@ public class LinkedList<E> {
         if (head == tail) tail = null;      // edge case: list with one element
         E toReturn = head.data;
         head = head.next;
+        size--;
         return toReturn;
         // what if the list is empty?
         // what is the list has only one element?
     }
 
+    public void add(int idx, E elt) {
+        if (idx < 0 || idx > size) throw new IndexOutOfBoundsException();
+        if (idx == 0) {             // edge case: what if this is the first element
+            addFirst(elt);
+            return;
+        }
+        Node nnd = new Node(elt);           // 1. allocate the new node
+        // get to idx. Create a tracker node, start at head, end at idx,
+        // move forward using next
+        // in order to put nnd at idx, node[idx-1].next = nnd
+        // and nnd.next = node[idx]
+        Node tnd = head;
+        for (int i = 0; i < idx-1; i++) {
+            tnd = tnd.next;
+        }   // tnd now equals node[idx-1]
+        nnd.next = tnd.next;                     // nnd now points to the node currently at idx
+        tnd.next = nnd;
+        if (idx == size) tail = nnd;        // edge case: what if this is the last element
+        size++;
+    }
+
+    public E remove(int idx) {
+        if (idx < 0 || idx >= size) throw new IndexOutOfBoundsException();
+        if (idx == 0) return removeFirst();
+        Node tnd = head;
+        for (int i = 0; i < idx-1; i++) {
+            tnd = tnd.next;
+        }   // tnd now points to the node before the one at idx
+        E toReturn = tnd.next.data;
+        tnd.next = tnd.next.next;
+        if (idx == (size-1)) tail = tnd;
+        size--;
+        return toReturn;
+    }
+
     public static void main(String[] args) {
         LinkedList<String> lst = new LinkedList<>();
         lst.add("floor");
-        lst.addFirst("hello");
-        lst.addFirst("goodbye");
-        lst.addFirst("coffee");
-        lst.addFirst("computer");
-        lst.add("desk");
-        lst.add("chair");
+        lst.add(1, "chair");
+        lst.add(1, "coffee");
+        lst.remove(0);
+        lst.remove(lst.size()-1);
     }
 }
