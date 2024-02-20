@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class DoublyLinkedList<E> {
     class Node {
         E data;
@@ -8,8 +10,32 @@ public class DoublyLinkedList<E> {
     Node head, tail;
     int size;
 
-    public void addFirst(E elt) {
+    public int size() { return size; }
 
+    public void addFirst(E elt) {
+        // 1. allocate the new node
+        Node nnd = new Node(elt);
+        // 2. save the address of the current first node
+        nnd.next = head;        // this works whether or not there is currently a first node
+                                // if the list is currently empty, head will be null,
+                                // so we are assigning nnd.next = null, which is correct for the
+                                // last node
+        if (nnd.next != null) {
+            nnd.next.prev = nnd;
+        } else {
+            tail = nnd;
+        }
+        // 3. link it to the list
+        head = nnd;
+
+        size++;
+    }
+
+    public E get(int idx) {
+        if (idx < 0 || idx >= size) throw new IndexOutOfBoundsException();
+        Node tnd = head;
+        for (int i = 0; i < idx; i++) tnd = tnd.next;
+        return tnd.data;
     }
 
     public boolean add(E elt) {
@@ -41,4 +67,7 @@ public class DoublyLinkedList<E> {
         tnd.prev = nnd;
         size++;
     }
+
+
+    
 }
