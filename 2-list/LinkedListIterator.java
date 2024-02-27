@@ -24,7 +24,31 @@ public class LinkedListIterator<E> {            // implements ListIterator<E>
         if (!hasNext()) throw new NoSuchElementException();
         prev = prev.next;
         lastReturned = prev;
-        return prev.data;
+        return lastReturned.data;
+    }
+
+    public E previous() {
+        if (!hasPrevious()) throw new NoSuchElementException();
+        prev = prev.prev;
+        lastReturned = prev.next;
+        return lastReturned.data;
+    }
+
+    public E set(E newElt) {
+        if (lastReturned == null) throw new IllegalStateException();
+        E oldElt = lastReturned.data; 
+        lastReturned.data = newElt;
+        return oldElt;
+    }
+
+    public E remove() {
+        if (lastReturned == null) throw new IllegalStateException();
+        lastReturned.prev.next = lastReturned.next;
+        lastReturned.next.prev = lastReturned.prev;
+        list.size--;
+        E toReturn = lastReturned.data;
+        lastReturned = null;
+        return toReturn;
     }
 
 }

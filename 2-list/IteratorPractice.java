@@ -16,10 +16,69 @@ public class IteratorPractice {
         return true;
     }
 
+    public <E> void print(Collection<E> c) {
+        Iterator<E> it = c.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
+        }
+    }
+
+    public <E> void printEveryOther(Collection<E> c) {
+        Iterator<E> it = c.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
+            if (it.hasNext()) it.next();
+        }
+    }
+
     public <E> void printInReverse(List<E> c) {
         ListIterator<E> it = c.listIterator(c.size());
         while (it.hasPrevious()) {
             System.out.println(it.previous());
+        }
+    }
+
+    public boolean secondHalfSumIsGreater(List<Integer> lst) {
+        int sum = 0;
+        ListIterator<Integer> lit = lst.listIterator();
+        while (lit.hasNext()) {
+            // are we in the first half or second half of the list
+            if (lit.nextIndex() < lst.size()/2) {       // in the first half
+                sum += lit.next();
+            } else {        // in the second half
+                sum -= lit.next();
+                if (sum < 0) return true;
+            }
+        }
+        return false;
+    }
+
+    public int accumulate(List<Integer> lst) {
+        ListIterator<Integer> lit = lst.listIterator();
+        int sum = 0;
+        while (lit.hasNext()) {
+            sum += lit.next();
+            lit.set(sum);
+        }
+        return sum;
+    }
+
+    public int accumulateWithoutVars(List<Integer> lst) {
+        ListIterator<Integer> lit = lst.listIterator();
+        if (lit.hasNext()) lit.next();
+        while(lit.hasNext()) {
+            int prev = lit.previous();
+            lit.next();
+            prev += lit.next();
+            lit.set(prev);
+        }
+        return lit.previous();
+    }
+
+    public <E> void printStartingFrom(List<E> lst, int idx) {
+        ListIterator<E> lit = lst.listIterator(idx);
+        while (lit.hasNext()) {
+            System.out.println(lit.next());
         }
     }
 
