@@ -1,6 +1,7 @@
 import java.util.NoSuchElementException;
+import java.util.*;
 
-public class LinkedListIterator<E> {            // implements ListIterator<E>
+public class LinkedListIterator<E> implements ListIterator<E> {
 
     SentinelLinkedList<E> list;
     SentinelLinkedList<E>.Node prev, lastReturned;
@@ -34,21 +35,41 @@ public class LinkedListIterator<E> {            // implements ListIterator<E>
         return lastReturned.data;
     }
 
-    public E set(E newElt) {
+    public void set(E newElt) {
         if (lastReturned == null) throw new IllegalStateException();
-        E oldElt = lastReturned.data; 
         lastReturned.data = newElt;
-        return oldElt;
     }
 
-    public E remove() {
+    public void remove() {
         if (lastReturned == null) throw new IllegalStateException();
         lastReturned.prev.next = lastReturned.next;
         lastReturned.next.prev = lastReturned.prev;
         list.size--;
-        E toReturn = lastReturned.data;
         lastReturned = null;
-        return toReturn;
+    }
+
+    public int previousIndex() { throw new UnsupportedOperationException(); }
+
+    public int nextIndex() { throw new UnsupportedOperationException(); }
+
+    public void add(E elt) {
+        SentinelLinkedList<E>.Node nnd = list.new Node(elt);
+        nnd.next = prev.next;
+        nnd.next.prev = nnd;
+        nnd.prev = prev;
+        nnd.prev.next = nnd;
+        list.size++;
+        lastReturned = null;
+    }
+
+    public static void main(String[] args) {
+        SentinelLinkedList<String> lst = new SentinelLinkedList<>();
+        String[] arr = {"hello", "goodbye", "coffee", "desk", "computer"};
+        for (String s : arr) 
+            lst.add(s);
+
+        
+
     }
 
 }

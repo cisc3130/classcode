@@ -1,3 +1,5 @@
+import java.util.ListIterator;
+
 public class SentinelLinkedList<E> {
     class Node {
         E data;
@@ -31,6 +33,39 @@ public class SentinelLinkedList<E> {
         nnd.prev = sentinel;
 
         size++;
+    }
+
+    public void add(int idx, E elt) {
+        if (idx < 0 || idx > size) throw new IndexOutOfBoundsException();
+        Node nnd = new Node(elt);
+        Node tnd;
+        if (idx <= size/2) {
+            tnd = sentinel.next;
+            for (int i = 0; i < idx; i++) tnd = tnd.next;
+        } else {
+            tnd = sentinel;
+            for (int i = size-1; i > idx; i--) tnd = tnd.prev;
+        }
+        // tnd is now pointing to the element at idx
+        tnd.prev.next = nnd;
+        nnd.prev = tnd.prev;
+        tnd.prev = nnd;
+        nnd.next = tnd;
+        size++;
+    }
+
+    public boolean add(E elt) {
+        this.add(this.size, elt);
+        return true;
+    }
+
+    // implement this for homework
+    // the LinkedListIterator constructor takes a list reference and a node
+    // pass it a reference to this list, 
+    // and the node that is a good "prev" value such that the cursor
+    // will be at the beginning of the list
+    public ListIterator<E> listIterator() {
+        throw new UnsupportedOperationException();
     }
 
     
