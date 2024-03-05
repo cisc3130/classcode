@@ -6,7 +6,7 @@ public class WordsAnalysis {
 
 
     public WordsAnalysis() {
-        words = new ArrayList<>();
+        words = new MArrayList<>();
         File f = new File("/workspaces/classcode/words_alpha.txt");
         try {
             Scanner freader = new Scanner(f);

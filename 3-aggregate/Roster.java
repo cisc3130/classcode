@@ -126,7 +126,7 @@ public class Roster {
     public boolean isOver(Person p, int age) { return p.getAge() >= age; }
 
     public List<Person> getPeopleOver(int age) {
-        List<Person> lst = new LinkedList<>();
+        List<Person> lst = new MLinkedList<>();
         for (Person p : roster) {
             if (isOver(p, age)) lst.add(p);
         }
@@ -146,7 +146,7 @@ public class Roster {
     }
 
     public List<Person> getPeopleIf(Predicate<Person> filter) {
-        List<Person> lst = new LinkedList<>();
+        List<Person> lst = new MLinkedList<>();
         for (Person p : roster) {
             if (filter.test(p)) lst.add(p);
         }
@@ -157,7 +157,7 @@ public class Roster {
         Roster r = new Roster();
         
         // get people over 18
-        List<Person> peopleOver18 = new LinkedList<>();
+        List<Person> peopleOver18 = new MLinkedList<>();
         for (Person p : r.roster) {
             peopleOver18.add(p);
         }
