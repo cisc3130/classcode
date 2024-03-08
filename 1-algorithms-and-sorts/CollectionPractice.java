@@ -18,7 +18,7 @@ public class CollectionPractice {
 
     public static void main(String[] args) {
         String[] strarr = {"hello", "goodbye", "cat", "dog", "computer", "desk"};
-        List<String> lst = new ArrayList<>();
+        List<String> lst = new MArrayList<>();
         addElementsFromArray(lst, strarr);
         Set<String> set = new TreeSet<>(lst);
         Deque<String> dq = new ArrayDeque<>();

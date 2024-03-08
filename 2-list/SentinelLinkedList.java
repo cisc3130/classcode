@@ -58,12 +58,7 @@ public class SentinelLinkedList<E> {
         this.add(this.size, elt);
         return true;
     }
-
-    // implement this for homework
-    // the LinkedListIterator constructor takes a list reference and a node
-    // pass it a reference to this list, 
-    // and the node that is a good "prev" value such that the cursor
-    // will be at the beginning of the list
+    
     public ListIterator<E> listIterator() {
         throw new UnsupportedOperationException();
     }

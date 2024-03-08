@@ -1,4 +1,4 @@
-public class LinkedList<E> {
+public class MLinkedList<E> {
     class Node {
         E data;
         Node next;
@@ -111,7 +111,7 @@ public class LinkedList<E> {
     }
 
     public static void main(String[] args) {
-        LinkedList<String> lst = new LinkedList<>();
+        MLinkedList<String> lst = new MLinkedList<>();
         lst.add("floor");
         lst.add(1, "chair");
         lst.add(1, "coffee");
