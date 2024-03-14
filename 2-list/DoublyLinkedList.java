@@ -69,5 +69,43 @@ public class DoublyLinkedList<E> {
     }
 
 
+    public void addToSortedList(E elt) {
+        Node nnd = new Node(elt);
+        // find correct location to put elt
+        // move the tracker node forward until we reach an element that is larger than elt
+        if (head == null) { // edge case #1: what if the list is empty
+            head = nnd;
+            size++;
+            return;
+        }
+        Node tnd = head;
+        while (!tnd.data.compareTo(elt) <= 0) {
+            if (tnd.next == null) {
+                break;
+            }
+            tnd = tnd.next;
+        }
+        // tnd should now equal the first element that is larger than elt
+        if (tnd.data.compareTo(elt) <= 0) {     // edge case #3: what if nnd should be inserted at the end of the list
+                                                // tnd now points to the last node but it's not larger than nnd
+            // insert it after tnd instead of before
+            tnd.next = nnd;
+            nnd.prev = tnd;
+            size++;
+            return;
+        }
+        nnd.next = tnd;
+        nnd.prev = tnd.prev;
+        tnd.prev = nnd;
+        if (nnd.prev == null)   // edge case #2: what if nnd is being inserted at the beginning of the list {
+            head = nnd;
+        } else {
+            nnd.prev.next = nnd;
+        }
+
+        size++;
+    }
+
+
     
 }

@@ -34,6 +34,17 @@ public class Stack<E> {
         return -1;
     }
 
+    public static <E> void removeEveryOtherElement(Stack<E> s) {
+        Stack<E> auxStack = new Stack<>();
+        while (!s.isEmpty()) {
+            s.pop();
+            if (!s.isEmpty()) auxStack.push(s.pop());
+        }
+        while (!auxStack.isEmpty()) {
+            s.push(auxStack.pop());
+        }
+    }
+
     public static <E> void moveToTop(Stack<E> s, int p) {
         Stack<E> aux = new Stack<>();
         for (int i = 0; i < p; i++) {

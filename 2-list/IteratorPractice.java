@@ -3,6 +3,19 @@ import java.util.*;
 
 public class IteratorPractice {
 
+    public <E> void interleave(List<E> lst1, List<E> lst2) {
+        ListIterator<E> it1 = lst1.listIterator(), it2 = lst2.listIterator();
+        while (it1.hasNext() && it2.hasNext()) {
+            it1.next();
+            it1.add(it2.next());
+        }
+        // if it2 still has elements remaining (lst2 is longer than lst1),
+        // just add all remaining elements of lst2 to lst1
+        while (it2.hasNext()) {
+            it1.add(it2.next());
+        }
+    }
+
     public boolean checkPalindrome(List<Character> str) {
         ListIterator<Character> fit = str.listIterator(),
                 bit = str.listIterator(str.size());

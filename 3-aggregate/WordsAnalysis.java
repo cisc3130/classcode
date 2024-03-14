@@ -27,6 +27,12 @@ public class WordsAnalysis {
             .filter(s -> s.length() > 12 && s.charAt(0) == s.charAt(s.length()-1))
             .filter(s -> s.charAt(0) != 't' && s.charAt(0) != 's')
             .forEach(System.out::println);
+
+        // average length of words in list
+        w.words.stream()
+            .mapToDouble(s -> s.length())
+            .average()
+            .getAsDouble();
         
     }
 
