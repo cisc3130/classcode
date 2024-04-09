@@ -79,6 +79,17 @@ public class Tree<E> {
         return false;
     }
 
+    public boolean contains(E elt, TreeNode nd) {
+        // base case
+        if (nd == null) return false;
+        // V
+        if (nd.data.equals(elt)) return true;
+        for (TreeNode cnd : nd.children) {
+            if (contains(elt, cnd)) return true;
+        }
+        return false;
+    }
+
     public int size() {
         if (root == null) return 0;
         Deque<TreeNode> unvisited = new ArrayDeque<>();

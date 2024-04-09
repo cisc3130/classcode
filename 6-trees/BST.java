@@ -46,6 +46,19 @@ public class BST<E extends Comparable<E>> {
         return tnd != null;
     }
 
+    public void print() { print(root); }
+
+    protected void print(Node nd) {
+        // base case
+        if (nd == null) return;
+        // recurse left (L)
+        if (nd.left != null) print(nd.left);
+        // visit (V)
+        System.out.print(nd.data + " ");
+        // recurse right (R)
+        if (nd.right != null) print(nd.right);
+    }
+
 
     public static void main(String[] args) {
         int [] arr = { 7, 1, 8, 9, 5, 1, 3, 16 };
@@ -53,7 +66,9 @@ public class BST<E extends Comparable<E>> {
         for (int i : arr) {
             tree.add(i);
         }
-        System.out.println(tree.contains(9));
-        System.out.println(tree.contains(11));
+        // System.out.println(tree.contains(9));
+        // System.out.println(tree.contains(11));
+
+        tree.print();
     }
 }
