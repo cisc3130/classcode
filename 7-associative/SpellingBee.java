@@ -1,6 +1,8 @@
 import java.util.*;
+import java.io.*;
 
 public class SpellingBee {
+    String puzzleString;
     Set<Character> puzzle;
     Character centerLetter;
     Set<String> dictionary;
@@ -10,6 +12,7 @@ public class SpellingBee {
     static final int MIN_LENGTH = 4;
 
     public SpellingBee(String puzzle) {
+        this.puzzleString = puzzle;
         this.puzzle = new TreeSet<>();
         for (char c : puzzle.toCharArray()) this.puzzle.add(c);
         centerLetter = puzzle.charAt(0);
@@ -22,7 +25,7 @@ public class SpellingBee {
     }
 
     public static Set<String> loadDictionary() {
-        String dictfile = "../words_alpha.txt";
+        String dictfile = "/workspaces/classcode/words_alpha.txt";
         Set<String> dictionary = new HashSet<>();
         try (Scanner sc = new Scanner(SpellingBee.class.getResource
                 (dictfile).openStream())) {
@@ -36,7 +39,8 @@ public class SpellingBee {
     }
 
     public String score(String word) {
-        if (word.length() < MIN_LENGTH) return "Too short";
+        int wordLength = word.length();
+        if (wordLength < MIN_LENGTH) return "Too short";
 
         boolean containsCenterLetter = false;
         for (char c : word.toCharArray()) {
@@ -50,7 +54,41 @@ public class SpellingBee {
 
         // is it a legal word
         if (!dictionary.contains(word)) { return "Not in word list"; }
+
+        alreadyFound.add(word);
+        int points;
+        String message = "";
+        if (wordLength == 4) points = 1;
+        else points = wordLength;
+
+        // if it's a pangram, add another 7 points
+        Set<Character> wordChars = new HashSet<>();
+        for (char c : word.toCharArray()) wordChars.add(c);
+        if (wordChars.size() == 7) {
+            points += 7;
+            message = "Pangram! ";
+        }
+
+        this.points += points;
+        return message + points + " points";
         
     }
 
+    public void play() {
+        Scanner sc = new Scanner(System.in);
+        boolean keepGuessing = true;
+        while (keepGuessing) {
+            System.out.println(puzzleString);
+            System.out.println("Enter your guess (or Q to quit): ");
+            String word = sc.next();
+            if (word.equals("Q")) keepGuessing = false;
+            else System.out.println(score(word));
+        }
+        sc.close();
+    }
+
+    public static void main(String[] args) {
+        SpellingBee sb = new SpellingBee("IOMPTCL");
+        sb.play();
+    }
 }
