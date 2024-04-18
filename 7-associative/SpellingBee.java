@@ -26,14 +26,16 @@ public class SpellingBee {
 
     public static Set<String> loadDictionary() {
         String dictfile = "/workspaces/classcode/words_alpha.txt";
-        Set<String> dictionary = new HashSet<>();
-        try (Scanner sc = new Scanner(SpellingBee.class.getResource
-                (dictfile).openStream())) {
-            while (sc.hasNext()) {
-                dictionary.add(sc.next());
+        Set<String> dictionary = new TreeSet<>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(dictfile));
+            String line;
+            while ((line = br.readLine()) != null) {
+                dictionary.add(line.toUpperCase());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            br.close();
+        } catch (IOException e) {
+            System.out.println("Error reading dictionary file: " + e);
         }
         return dictionary;
     }
@@ -82,13 +84,14 @@ public class SpellingBee {
             System.out.println("Enter your guess (or Q to quit): ");
             String word = sc.next();
             if (word.equals("Q")) keepGuessing = false;
-            else System.out.println(score(word));
+            else System.out.println(score(word.toUpperCase()));
         }
+        System.out.println("You scored " + points + " points");
         sc.close();
     }
 
     public static void main(String[] args) {
-        SpellingBee sb = new SpellingBee("IOMPTCL");
+        SpellingBee sb = new SpellingBee("PKINGRA");
         sb.play();
     }
 }
