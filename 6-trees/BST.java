@@ -59,6 +59,27 @@ public class BST<E extends Comparable<E>> {
         if (nd.right != null) print(nd.right);
     }
 
+    protected boolean isBST(Node nd) {
+        if (nd == null) return false;
+        if (!isBST(nd.left)) return false;
+        if (!isBST(nd.right)) return false;
+        if (nd.data.compareTo(max(nd.left)) > 0) return false;
+        if (nd.data.compareTo(min(nd.right)) < 0) return false;
+        return true;
+    }
+
+    protected E min(Node nd) {
+        if (nd == null) return null;
+        while (nd.left != null) nd = nd.left;
+        return nd.data;
+    }
+
+    protected E max(Node nd) {
+        if (nd == null) return null;
+        while (nd.right != null) nd = nd.right;
+        return nd.data;
+    }
+
 
     public static void main(String[] args) {
         int [] arr = { 7, 1, 8, 9, 5, 1, 3, 16 };

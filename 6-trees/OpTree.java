@@ -34,7 +34,12 @@ public class OpTree {
         }
 
         public String toInfixString() {
-            return String.join(" ", leftChild.toInfixString(), this.name, rightChild.toInfixString());
+            String res = String.join(" ", leftChild.toInfixString(), this.name, rightChild.toInfixString());
+            if (this.name.equals("+") || this.name.equals("-")) {
+                return "( " + res + " )";
+            } else {
+                return res;
+            }
         }
 
         public String toPrefixString() {
