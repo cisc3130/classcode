@@ -8,7 +8,7 @@ class Desk implements Comparable<Desk> {
     }
 }
 
-public class GenericSorter<E extends Comparable<E>> {
+public class GenericSorter<E> {
 
     public String[] generateStringArray() {
         String[] arr = new String[10];

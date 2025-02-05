@@ -24,24 +24,29 @@ public class IntSorter {
         System.out.println("}");
     }
 
+    public static void printArr(int[] arr) {
+        System.out.print("{ ");
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println("}");
+    }
+
     /*********** End of pre-written code ***********/
 
-    public static void bubbleSort(int[] arr) {
-        // invariant: at the end of the kth pass of bubble sort, the kth largest element
-        // has bubbled down to the kth to last position
-        // ==> the last k+1 elements are sorted
-        for (int i = 0; i < arr.length; i++) {
+    public static void bubbleSort(Object[] arr) {
+        for (int i = 0; i < arr.length - 1; i++) {
             boolean swapped = false;
-            for (int j = 0; j < arr.length - 1 - i; j++) {
-                if (arr[j] > arr[j+1]) {    // elements are out of order, swap
-                    int tmp = arr[j];
+            for (int j = 0; j < arr.length - 1 - i; j++) {      // we can stop early because the last i elements are already sorted
+                if (arr[j].compareTo(arr[j+1]) > 0) {        // if the elements are out of order
+                    Object tmp = arr[j];           // swap them
                     arr[j] = arr[j+1];
                     arr[j+1] = tmp;
                     swapped = true;
                 }
-            } // one element has bubbled to the end
-            if (!swapped) return;   // heuristic: if a pass is completed without any swaps, the array is sorted
-        } // after k iterations, the last k elements are sorted
+            }
+            if (!swapped) break;        // if nothing has been swapped, the array has been sorted
+        }
     }
 
     /*
@@ -117,9 +122,9 @@ public class IntSorter {
     public static void main(String[] args) {
         int[] arr = generateIntArray();
         printArr(arr);
-        // bubbleSort(arr);
+        bubbleSort(arr);
         // selectionSort(arr);
-        insertionSort(arr);
+        // insertionSort(arr);
         printArr(arr);
     }
 }
