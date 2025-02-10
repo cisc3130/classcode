@@ -120,11 +120,14 @@ public class IntSorter {
 
 
     public static void main(String[] args) {
-        int[] arr = generateIntArray();
-        printArr(arr);
-        bubbleSort(arr);
+        // int[] arr = generateIntArray();
+        // printArr(arr);
+        // bubbleSort(arr);
         // selectionSort(arr);
         // insertionSort(arr);
-        printArr(arr);
+        // printArr(arr);
+
+        Object[] objArr = {17, 22, "hello", "goodbye", 85};
+        bubbleSort(objArr);
     }
 }

@@ -8,7 +8,7 @@ class Desk implements Comparable<Desk> {
     }
 }
 
-public class GenericSorter<E> {
+public class GenericSorter<E extends Comparable<E>> {
 
     public String[] generateStringArray() {
         String[] arr = new String[10];
@@ -28,17 +28,14 @@ public class GenericSorter<E> {
 
     public void insertionSort(E[] arr) {
         for (int i = 1; i < arr.length; i++) {
+            E toSort = arr[i];
             int j = i;
-            E toSort = arr[j];
-            while (j > 0 && (toSort.compareTo(arr[j-1]) < 0)) {
+            while (j > 0 && toSort.compareTo(arr[j-1]) < 0) {
                 arr[j] = arr[j-1];
                 j--;
             }
-            // either j == 0 or arr[j-1] <= toSort
             arr[j] = toSort;
-        } // after i iterations, the first i elements are sorted relative to each other
-          // (they may still be moved down)
-
+        }
     }
     
 
@@ -60,5 +57,6 @@ public class GenericSorter<E> {
         GenericSorter<Desk> deskSorter = new GenericSorter<>();
 
         // GenericSorter<char> basicSorter = new GenericSorter<>();
+
     }
 }
