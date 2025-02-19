@@ -1,15 +1,15 @@
 import java.lang.*;
 
-public class MArrayList<E> {
+public class ArrayList<E> {
     E[] data;
     int size;
 
-    public MArrayList(int initialCapacity) {
+    public ArrayList(int initialCapacity) {
         data = (E[]) new Object[initialCapacity];
         size = 0;
     }
 
-    public MArrayList() {
+    public ArrayList() {
         this(10);
     }
 
@@ -75,7 +75,7 @@ public class MArrayList<E> {
 
     public static void main(String[] args) {
         String[] strs = { "hello", "goodbye", "cat", "dog", "coffee", "computer"};
-        MArrayList<String> lst = new MArrayList<>(4);
+        ArrayList<String> lst = new ArrayList<>(4);
         lst.add("hello");
         lst.add("goodbye");
         lst.add("cat");
