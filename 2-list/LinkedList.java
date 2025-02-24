@@ -61,6 +61,39 @@ public class LinkedList<E> {
         return toReturn;
     }
 
+    public E remove(E valueToRemove) {
+        // traverse through the list
+        // compare each node to the target value
+        // if the value is equal, remove the node
+
+        // edge case: what if the list is empty
+        if (head == null) {
+            return null;
+        }
+
+        // edge case: what if the value to remove is in the first node
+        if (head.data.equals(valueToRemove)) {
+            head = head.next;
+            size--;
+            return valueToRemove;
+        }
+
+        Node tnd = head;
+        while (tnd.next != null && !tnd.next.data.equals(valueToRemove)) {
+            tnd = tnd.next;
+        }
+        // tnd.next.data is now equal to valueToRemove OR tnd.next is null and the value is not in the list
+        if (tnd.next == null) {     // valueToRemove is not in list
+            return null;
+        }
+        
+        // tnd.next is not null which means that tnd.next.data is equal to valueToRemove
+        tnd.next = tnd.next.next;
+        
+        size--;
+        return valueToRemove;
+    }
+
     public static void main(String[] args) {
         String[] strs = { "hello", "goodbye", "cat", "dog", "coffee", "computer"};
         LinkedList<String> lst = new LinkedList<>();
