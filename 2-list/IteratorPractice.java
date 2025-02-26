@@ -3,6 +3,54 @@ import java.util.*;
 
 public class IteratorPractice {
 
+    public <E> void print(Collection<E> c) {
+        Iterator<E> it = c.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
+        }
+    }
+
+    public <E> void clear(Collection<E> c) {
+        Iterator<E> it = c.iterator();
+        while (it.hasNext()) {
+            it.next();
+            it.remove();
+        }
+    }
+
+    public <E> int removeIfMatch(Collection<E> c, E target) {
+        int count = 0;
+        Iterator<E> it = c.iterator();
+        while (it.hasNext()) {
+            E elt = it.next();
+            if (elt.equals(target)) {
+                it.remove();
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public <E extends Comparable<E>> void bubbleSort(List<E> lst) {
+        if (lst.size() < 2) return;
+        for (int i = 0; i < lst.size(); i++) {
+            boolean swapped = false;
+            ListIterator<E> lit1 = lst.listIterator(), lit2 = lst.listIterator(1);
+            while (lit2.hasNext()) {
+                E val1 = lit1.next(), val2 = lit2.next();
+                if (val1.compareTo(val2) > 0) {
+                    swapped = true;
+                    lit1.set(val2);
+                    lit2.set(val1);
+                }
+            }
+            if (!swapped) return;
+        }
+    }
+
+
+
+
     public <E> void interleave(List<E> lst1, List<E> lst2) {
         ListIterator<E> it1 = lst1.listIterator(), it2 = lst2.listIterator();
         while (it1.hasNext() && it2.hasNext()) {

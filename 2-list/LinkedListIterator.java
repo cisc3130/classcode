@@ -14,52 +14,49 @@ public class LinkedListIterator<E> implements ListIterator<E> {
     }
 
     public boolean hasNext() {
-        return prev.next != list.sentinel;
+        return prev.next == list.sentinel;
     }
 
     public boolean hasPrevious() {
-        return prev != list.sentinel;
+        return prev == list.sentinel;
     }
 
     public E next() {
         if (!hasNext()) throw new NoSuchElementException();
         prev = prev.next;
+        E toReturn = prev.data;
         lastReturned = prev;
-        return lastReturned.data;
+        return toReturn;
     }
 
     public E previous() {
-        if (!hasPrevious()) throw new NoSuchElementException();
-        prev = prev.prev;
-        lastReturned = prev.next;
-        return lastReturned.data;
+
     }
 
-    public void set(E newElt) {
+
+
+
+    public void set(E newValue) {
         if (lastReturned == null) throw new IllegalStateException();
-        lastReturned.data = newElt;
+        lastReturned.data = newValue;
     }
 
     public void remove() {
-        if (lastReturned == null) throw new IllegalStateException();
-        lastReturned.prev.next = lastReturned.next;
-        lastReturned.next.prev = lastReturned.prev;
-        list.size--;
-        lastReturned = null;
+       if (lastReturned == null) throw new IllegalStateException();
+       lastReturned.prev.next = lastReturned.next;
+       lastReturned.next.prev = lastReturned.prev;
+       list.size--;
+       if (lastReturned == prev) prev = prev.prev;
+       lastReturned = null;
     }
+
 
     public int previousIndex() { throw new UnsupportedOperationException(); }
 
     public int nextIndex() { throw new UnsupportedOperationException(); }
 
     public void add(E elt) {
-        SentinelLinkedList<E>.Node nnd = list.new Node(elt);
-        nnd.next = prev.next;
-        nnd.next.prev = nnd;
-        nnd.prev = prev;
-        nnd.prev.next = nnd;
-        list.size++;
-        lastReturned = null;
+       
     }
 
     public static void main(String[] args) {

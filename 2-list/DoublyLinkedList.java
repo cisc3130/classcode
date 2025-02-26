@@ -20,6 +20,7 @@ public class DoublyLinkedList<E> {
         else {
             // link it to the list
             tail.next = nnd;
+            nnd.prev = tail;
             tail = tail.next;
         }
 
@@ -89,4 +90,20 @@ public class DoublyLinkedList<E> {
         return tnd.data;
     }
 
+    public void print() {
+        Node tnd = head;
+        while (tnd != null) {
+            System.out.println(tnd.data);
+            tnd = tnd.next;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        DoublyLinkedList<Integer> lst = new DoublyLinkedList<>();
+        // fill the list up
+        for (int i = 0; i < lst.size(); i++) {
+            System.out.println(lst.get(i));
+        }
+    }
 }
