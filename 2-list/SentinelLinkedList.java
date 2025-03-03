@@ -31,5 +31,12 @@ public class SentinelLinkedList<E> {
         return true;
     }
 
-    
+    protected void addAfter(E elt, Node n) {
+        Node nnd = new Node(elt);
+        nnd.next = n.next;
+        nnd.next.prev = nnd;
+        nnd.prev = n;
+        nnd.prev.next = nnd;
+        size++;
+    }
 }

@@ -56,7 +56,7 @@ public class LinkedListIterator<E> implements ListIterator<E> {
     public int nextIndex() { throw new UnsupportedOperationException(); }
 
     public void add(E elt) {
-       
+       list.addAfter(elt, prev);
     }
 
     public static void main(String[] args) {

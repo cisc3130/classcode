@@ -52,42 +52,36 @@ public class IteratorPractice {
 
 
     public <E> void interleave(List<E> lst1, List<E> lst2) {
-        ListIterator<E> it1 = lst1.listIterator(), it2 = lst2.listIterator();
-        while (it1.hasNext() && it2.hasNext()) {
-            it1.next();
-            it1.add(it2.next());
-        }
-        // if it2 still has elements remaining (lst2 is longer than lst1),
-        // just add all remaining elements of lst2 to lst1
-        while (it2.hasNext()) {
-            it1.add(it2.next());
-        }
+       ListIterator<E> lit1 = lst1.listIterator(),
+                        lit2 = lst2.listIterator();
+       while(lit1.hasNext() && lit2.hasNext()) {
+            lit1.next();
+            lit1.add(lit2.next());
+            lit1.next();
+       }
+       while(lit2.hasNext()) {
+            lit1.add(lit2.next());
+            lit1.next();
+       }
     }
 
     public boolean checkPalindrome(List<Character> str) {
-        ListIterator<Character> fit = str.listIterator(),
-                bit = str.listIterator(str.size());
-
+        ListIterator<Character> fit = str.listIterator(), bit = str.listIterator(str.size());
         while (bit.previousIndex() - fit.nextIndex() > 0) {
             if (!fit.next().equals(bit.previous())) {
                 return false;
             }
         }
-        
         return true;
+
     }
 
-    public <E> void print(Collection<E> c) {
-        Iterator<E> it = c.iterator();
-        while (it.hasNext()) {
-            System.out.println(it.next());
-        }
-    }
 
-    public <E> void printEveryOther(Collection<E> c) {
+    public <E> void removeEveryOther(Collection<E> c) {
         Iterator<E> it = c.iterator();
-        while (it.hasNext()) {
-            System.out.println(it.next());
+        while(it.hasNext()) {
+            it.next();
+            it.remove();
             if (it.hasNext()) it.next();
         }
     }
@@ -101,17 +95,13 @@ public class IteratorPractice {
 
     public boolean secondHalfSumIsGreater(List<Integer> lst) {
         int sum = 0;
-        ListIterator<Integer> lit = lst.listIterator();
-        while (lit.hasNext()) {
-            // are we in the first half or second half of the list
-            if (lit.nextIndex() < lst.size()/2) {       // in the first half
-                sum += lit.next();
-            } else {        // in the second half
-                sum -= lit.next();
-                if (sum < 0) return true;
-            }
+        ListIterator<Integer> it = lst.listIterator();
+        int midpoint = lst.size()/2;
+        while (it.hasNext()) {
+            if (it.nextIndex() < midpoint) sum += it.next();
+            else sum -= it.next();
         }
-        return false;
+        return sum < 0;
     }
 
     public int accumulate(List<Integer> lst) {
@@ -125,22 +115,15 @@ public class IteratorPractice {
     }
 
     public int accumulateWithoutVars(List<Integer> lst) {
-        ListIterator<Integer> lit = lst.listIterator();
-        if (lit.hasNext()) lit.next();
-        while(lit.hasNext()) {
-            int prev = lit.previous();
-            lit.next();
-            prev += lit.next();
-            lit.set(prev);
+        ListIterator<Integer> it1 = lst.listIterator(), it2 = lst.listIterator(1);
+        while (it2.hasNext()) {
+            it2.set(it1.next() + it2.next());
         }
-        return lit.previous();
+        return it1.next();
     }
 
     public <E> void printStartingFrom(List<E> lst, int idx) {
-        ListIterator<E> lit = lst.listIterator(idx);
-        while (lit.hasNext()) {
-            System.out.println(lit.next());
-        }
+        
     }
 
     public void func(List<String> lst) {
@@ -174,7 +157,7 @@ public class IteratorPractice {
         }
         // This takes quadratic time
         // get takes linear time
-        // add starts again from head and takes linear time again
+        // remove starts again from head and takes linear time again
 
 
         for (String s : dll) {
