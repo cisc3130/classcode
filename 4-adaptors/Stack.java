@@ -96,7 +96,7 @@ public class Stack<E> {
         s.push('S');
         s.pop();
         s.pop();
-
+        System.out.println(s.peek());
 
         String ex1 = "<({[}])>",
             ex2 = "<({]})>",

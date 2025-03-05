@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.function.*;
+
 /*
  * Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
  *
@@ -81,6 +83,8 @@ import java.util.*;
      public LocalDate getBirthday() {
          return birthday;
      }
+
+     public boolean isOver18() { return this.getAge() > 18; }
       
      public static int compareByAge(Person a, Person b) {
          return a.birthday.compareTo(b.birthday);
@@ -116,6 +120,12 @@ import java.util.*;
       
  }
 
+ class PersonIsOver18Predicate implements Predicate<Person> {
+    public boolean test(Person p) {
+        return p.getAge() > 18;
+    }
+}
+
 public class Roster {
     List<Person> roster;
 
@@ -128,22 +138,28 @@ public class Roster {
     public List<Person> getPeopleOver(int age) {
         List<Person> lst = new LinkedList<>();
         for (Person p : roster) {
-            if (isOver(p, age)) lst.add(p);
+            if (p.getAge() > age) lst.add(p);
         }
         return lst;
     }
 
     public List<Person> getPeopleUnder(int age) {
-        return getPeopleIf(p -> p.getAge() >= age);
+        List<Person> lst = new LinkedList<>();
+        for (Person p : roster) {
+            if (p.getAge() < age) lst.add(p);
+        }
+        return lst;
     }
 
-    public List<Person> getPeopleGender(Person.Sex g) {
-        return getPeopleIf(new Predicate<Person>() {
-            public boolean test(Person p) {
-                return p.getGender().equals(g);
-            }
-        });
+    public List<Person> getPeopleOfGender(Person.Sex g) {
+        List<Person> lst = new LinkedList<>();
+        for (Person p : roster) {
+            if (p.getGender().equals(g)) lst.add(p);
+        }
+        return lst;
     }
+
+    
 
     public List<Person> getPeopleIf(Predicate<Person> filter) {
         List<Person> lst = new LinkedList<>();
@@ -153,13 +169,17 @@ public class Roster {
         return lst;
     }
 
+    
+
     public static void main(String[] args) {
         Roster r = new Roster();
         
         // get people over 18
-        List<Person> peopleOver18 = new LinkedList<>();
-        for (Person p : r.roster) {
-            peopleOver18.add(p);
-        }
+        // List<Person> peopleOver18 = r.getPeopleIf(new PersonIsOver18Predicate());
+        // List<Person> peopleOver18 = r.getPeopleIf(Person::isOver18);
+        List<Person> peopleOver18 = r.getPeopleIf(p -> p.getAge() > 18);
+        List<Person> peopleUnder18 = r.getPeopleIf(new Predicate<P>() {
+            public boolean test(Person p) { return p.getAge() < 18; }
+        };)
     }
 }
