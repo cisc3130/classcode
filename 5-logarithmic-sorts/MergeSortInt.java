@@ -1,4 +1,4 @@
-public class MergeSortI {
+public class MergeSortInt {
     public void mergeSort(int[] arr) {
         mergeSort(arr, 0, arr.length);
     }
@@ -28,7 +28,7 @@ public class MergeSortI {
             // compare scratch[nextFirst] to arr[nextSecond]
             // write whichever is smaller into arr[nextWrite]
             // advance whichever pointer was smaller
-            arr[nextWrite++] = scratch[nextFirst] > arr[nextSecond] ? arr[nextFirst++] : arr[nextSecond++];
+            arr[nextWrite++] = scratch[nextFirst] < arr[nextSecond] ? arr[nextFirst++] : arr[nextSecond++];
         }
         while (nextFirst < (middle - begin)) {
             arr[nextWrite++] = scratch[nextFirst++];
