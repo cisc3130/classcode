@@ -56,7 +56,7 @@ class Graph {
         while (!unvisited.isEmpty()) {
             State s = unvisited.removeFirst();
             if (s.equals(s2)) {
-                List<State> path = new LinkedList<>();
+                List<State> path = new CLinkedList<>();
                 while (!s.equals(s1)) {
                     path.add(0, s);
                     s = parent.get(s);

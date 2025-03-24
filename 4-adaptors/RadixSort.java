@@ -11,7 +11,7 @@ public class RadixSort {
         this.numDigits = numDigits;
         bins = new ArrayList<>();                   // instantiate the bins data structure
         for (int i = 0; i < 10; i++) {
-            bins.add(new LinkedList<Integer>());    // instantiate an empty queue (implemented as a LL) for each bin
+            bins.add(new CLinkedList<Integer>());    // instantiate an empty queue (implemented as a LL) for each bin
         }
     }
 

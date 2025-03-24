@@ -3,10 +3,11 @@ import java.util.*;
 public class Tree<E> {
     class TreeNode {
         E data;
+        TreeNode parent;
         List<TreeNode> children;
         TreeNode(E data) {
             this.data = data;
-            children = new LinkedList<>();
+            children = new java.util.LinkedList<Tree<E>.TreeNode>();
         }
         public void addChild(TreeNode nd) { children.add(nd); }
     }
@@ -15,8 +16,9 @@ public class Tree<E> {
 
     public boolean isEmpty() { return root == null; }
 
-    public static Tree buildFoodTree() {
+    public static Tree<String> buildFoodTree() {
         Tree<String> foodTree = new Tree<>();
+
         Tree<String>.TreeNode food = foodTree.new TreeNode("Food");
         foodTree.root = food;
 

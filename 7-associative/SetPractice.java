@@ -39,7 +39,7 @@ public class SetPractice {
 
     public static List<Integer> checkDocument(List<String> doc) {
         ListIterator<String> it = doc.listIterator();
-        List<Integer> misspelledIdx = new LinkedList<>();
+        List<Integer> misspelledIdx = new CLinkedList<>();
 
         while (it.hasNext()) {
             String word = it.next();
