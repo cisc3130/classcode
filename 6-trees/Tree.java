@@ -9,7 +9,10 @@ public class Tree<E> {
             this.data = data;
             children = new java.util.LinkedList<Tree<E>.TreeNode>();
         }
-        public void addChild(TreeNode nd) { children.add(nd); }
+        public void addChild(TreeNode nd) { 
+            children.add(nd); 
+            nd.parent = this;
+        }
     }
 
     TreeNode root;
@@ -67,19 +70,38 @@ public class Tree<E> {
     }
 
     public boolean contains(E elt) {
-        if (root == null) return false;
+        if (root == null) return false;     // tree is empty, does not contain elt
         Deque<TreeNode> unvisited = new ArrayDeque<>();
         unvisited.addLast(root);
         while (!unvisited.isEmpty()) {
             // remove the next node from unvisited
             TreeNode nd = unvisited.removeFirst();
             // ****visit****
-            if (nd.data.equals(elt)) return true;
+            if (nd.data.equals(elt)) {
+                return true;                    // elt was found, can stop looking
+            }
             // add its children to unvisited
             for (TreeNode c : nd.children) unvisited.addLast(c);
         }
-        return false;
+        return false;   // all elements have been visited and elt was not found
     }
+
+    public void findReplace(E findVal, E replaceVal) {
+        if (root == null) return;
+        Deque<TreeNode> unvisited = new ArrayDeque<>();
+        unvisited.addLast(root);
+        while (!unvisited.isEmpty()) {
+            TreeNode nd = unvisited.removeFirst();
+            // ***visit***
+            if (nd.data.equals(findVal)) {
+                nd.data = replaceVal;
+            }
+            // add children to unvisited
+            for (TreeNode c : nd.children) unvisited.addLast(c);
+        }
+    }
+
+  
 
     public boolean contains(E elt, TreeNode nd) {
         // base case
@@ -93,17 +115,17 @@ public class Tree<E> {
     }
 
     public int size() {
-        if (root == null) return 0;
-        Deque<TreeNode> unvisited = new ArrayDeque<>();
-        unvisited.addLast(root);
+        if (root == null) return 0;     // tree is empty, size is 0
+        Stack<TreeNode> unvisited = new Stack<>();
+        unvisited.push(root);
         int count = 0;
         while (!unvisited.isEmpty()) {
-            // remove the next node from unvisited
-            TreeNode nd = unvisited.removeFirst();
-            // ****visit****
+            TreeNode nd = unvisited.pop();
+            // ***visit***
             count++;
-            // add its children to unvisited
-            for (TreeNode c : nd.children) unvisited.addLast(c);
+            for (TreeNode c : nd.children) {
+                unvisited.push(c);
+            }
         }
         return count;
     }
