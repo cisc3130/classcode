@@ -3,13 +3,13 @@ import java.util.*;
 public class RadixSort {
 
     List<Integer> toSort;
-    ArrayList<Queue<Integer>> bins;
+    MArrayList<Queue<Integer>> bins;
     int numDigits;
 
     public RadixSort(List<Integer> toSort, int numDigits) {
         this.toSort = toSort;
         this.numDigits = numDigits;
-        bins = new ArrayList<>();                   // instantiate the bins data structure
+        bins = new MArrayList<>();                   // instantiate the bins data structure
         for (int i = 0; i < 10; i++) {
             bins.add(new CLinkedList<Integer>());    // instantiate an empty queue (implemented as a LL) for each bin
         }

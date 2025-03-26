@@ -1,4 +1,4 @@
-public class LinkedList<E> {
+public class MLinkedList<E> {
     protected class Node {
         E data;
         Node next;
@@ -8,7 +8,7 @@ public class LinkedList<E> {
     Node head;
     int size;
 
-    public LinkedList() {}
+    public MLinkedList() {}
 
     public boolean isEmpty() { return head == null; }
 
@@ -96,7 +96,7 @@ public class LinkedList<E> {
 
     public static void main(String[] args) {
         String[] strs = { "hello", "goodbye", "cat", "dog", "coffee", "computer"};
-        LinkedList<String> lst = new LinkedList<>();
+        MLinkedList<String> lst = new MLinkedList<>();
         lst.add("hello");
         int x = 72;
         lst.add("goodbye");

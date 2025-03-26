@@ -2,10 +2,10 @@ import java.util.*;
 
 
 public class Stack<E> {
-    private ArrayList<E> data;
+    private MArrayList<E> data;
 
     public Stack() {
-        data = new ArrayList<>();
+        data = new MArrayList<>();
     }
 
     public boolean isEmpty() {

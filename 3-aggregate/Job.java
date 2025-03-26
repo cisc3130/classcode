@@ -72,7 +72,7 @@ public class Job {
 
     public static List<Job> loadJobs() {
         File f = new File("../data/CalCareerData.dat");
-        List<Job> jobs = new ArrayList<Job>();
+        List<Job> jobs = new MArrayList<Job>();
         try {
             Scanner sc = new Scanner(f);
             while (sc.hasNextLine()) {

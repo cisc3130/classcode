@@ -28,7 +28,7 @@ public class Banana {
     }
 
     public static List<Banana> loadBananas(String filename) {
-        List<Banana> bananas = new ArrayList<>();
+        List<Banana> bananas = new MArrayList<>();
         try {
             Scanner scanner = new Scanner(new java.io.File(filename));
             scanner.nextLine(); // Skip the header

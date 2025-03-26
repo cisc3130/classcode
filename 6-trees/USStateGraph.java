@@ -8,7 +8,7 @@ class State {
 
     State(String name) {
         this.name = name;
-        this.neighbors = new ArrayList<>();
+        this.neighbors = new MArrayList<>();
     }
 
     void addNeighbor(State neighbor) {
