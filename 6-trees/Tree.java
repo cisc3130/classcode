@@ -130,6 +130,16 @@ public class Tree<E> {
         return count;
     }
 
+    // pseudocode
+    public void killProcess(Process p) {
+        if (p == null) return;
+        for (Process cp : p.children) killProcess(cp);
+        p.status = "terminated";
+        delete p.memory;
+        for (File f : p.file) f.close();
+
+    }
+
     public static void main(String[] args) {
         Tree<String> foodTree = buildFoodTree();
         foodTree.printTree();
