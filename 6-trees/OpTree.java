@@ -92,14 +92,15 @@ public class OpTree {
 
 
     public static void main(String[] args) {
-        for (String arg : args) {
+        String arg = "34+2*5-3/";
+        // for (String arg : args) {
             OpTree tree = new OpTree(arg);
             System.out.println("The value of this expression is " + tree.evaluate());
             System.out.println("Postfix notation: " + tree.toPostfixString());
             System.out.println("Prefix notation: " + tree.toPrefixString());
             System.out.println("Infix notation: " + tree.toInfixString());
         }
-    }
+    // }
 
     
 }

@@ -8,42 +8,59 @@ public class BST<E extends Comparable<E>> {
     Node root;
 
     public boolean add(E elt) {
-        Node nnd = new Node(elt);
-        if (root == null) {
-            root = nnd;
-            return true;
-        }
         Node tnd = root;
-        while (!tnd.data.equals(elt)) {
-            if (elt.compareTo(tnd.data) < 0)  {  // elt is smaller than tnd.data
-                if (tnd.left == null) {
+        while (tnd != null) {
+            int c = tnd.data.compareTo(elt);
+            if (c == 0) {           // the current node's data is equal to the one we're trying to add
+                return false;       // can't add a duplicate
+            }
+            if (c < 0) {            // the current node's data is less than the one we're trying to add
+                if (tnd.left == null) {     // empty spot: put the new node here
+                    Node nnd = new Node(elt);
                     tnd.left = nnd;
                     nnd.parent = tnd;
-                    return true;
+                    return true;    
+                } else {
+                    tnd = tnd.left;     // else: continue looking in the left branch
                 }
-                tnd = tnd.left;
-            } else {                             // elt is larger than tnd.data
-                if (tnd.right == null) {
+            } else {                // the current node's data is greater than the one we're trying to add
+                if (tnd.right == null) {    // empty spot: put the new node here
+                    Node nnd = new Node(elt);
                     tnd.right = nnd;
                     nnd.parent = tnd;
                     return true;
+                } else {
+                    tnd = tnd.right;    // else: continue looking in the left branch
                 }
+            }
+        }
+        // tnd is null: this means the tree is empty and the new node should be the root
+        root = new Node(elt);;
+        return true;
+    }
+
+    public boolean contains(E elt) {
+        Node tnd = root;
+        while (tnd != null) {
+            int c = tnd.data.compareTo(elt);
+            if (c == 0) {       // the current node's data is equal to the one we're looking for
+                return true;
+            }
+            if (c < 0) {        // the current node's data is smaller than the one we're looking for
                 tnd = tnd.right;
+            } else {            // the current node's data is greater than the one we're looking for
+                tnd = tnd.left;
             }
         }
         return false;
     }
 
-    public boolean contains(E elt) {
-        Node tnd = root;
-        while (tnd != null && !tnd.data.equals(elt)) {
-            if (elt.compareTo(tnd.data) < 0) {
-                tnd = tnd.left;
-            } else {
-                tnd = tnd.right;
-            }
-        }
-        return tnd != null;
+    public boolean contains(Node nd, E elt) {
+        if (nd == null) return false;
+        int c = nd.data.compareTo(elt);
+        if (c == 0) return true;
+        if (c > 0) return contains(nd.left, elt);
+        return contains(nd.right, elt);
     }
 
     public void print() { print(root); }

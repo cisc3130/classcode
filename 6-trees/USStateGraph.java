@@ -8,7 +8,7 @@ class State {
 
     State(String name) {
         this.name = name;
-        this.neighbors = new MArrayList<>();
+        this.neighbors = new ArrayList<>();
     }
 
     void addNeighbor(State neighbor) {
@@ -56,7 +56,7 @@ class Graph {
         while (!unvisited.isEmpty()) {
             State s = unvisited.removeFirst();
             if (s.equals(s2)) {
-                List<State> path = new CLinkedList<>();
+                List<State> path = new LinkedList<>();
                 while (!s.equals(s1)) {
                     path.add(0, s);
                     s = parent.get(s);
