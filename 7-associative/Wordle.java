@@ -10,16 +10,16 @@ public class Wordle {
     final String GREENSQUARE = "🟩", YELLOWSQUARE = "🟨", GRAYSQUARE = "⬜";
     final int WORDLENGTH = 5, NUMGUESSES = 6;
     final String WINSTRING = "🟩🟩🟩🟩🟩";
+    Set<String> alreadyGuessed;
 
     public Wordle(String puzzle) {
         this.puzzle = puzzle;
-        // puzzleChars = new TreeSet<>();
-        // for (char c : puzzle.toCharArray()) puzzleChars.add(c);
         puzzleCharCounts = new TreeMap<>();
         for (char c : puzzle.toCharArray()) {
             puzzleCharCounts.compute(c, (k, v) -> v == null ? 1 : v+1);
         }
         dictionary = loadDictionary();
+        alreadyGuessed = new HashSet<>();
     }
 
     public static Set<String> loadDictionary() {
@@ -40,13 +40,19 @@ public class Wordle {
 
     public String checkGuess(String guess) {
         if (guess.length() != WORDLENGTH) {
-            System.out.println("Too short");
+            System.out.println("Guess must have" + WORDLENGTH + " letters");
+            return null;
+        }
+        boolean didntGuessYet = alreadyGuessed.add(guess);
+        if (!didntGuessYet) {
+            System.out.println("Already guessed");
             return null;
         }
         if (!dictionary.contains(guess)) {
             System.out.println("Word not in dictionary");
             return null;
         }
+        
         Map<Character, Integer> localPuzzleCharCounts = new TreeMap<>(puzzleCharCounts);    // deep copy
         // NOT Map<Character, Integer> localPuzzleCharCounts = puzzleCharCounts; // shallow copy
         String [] result = new String[WORDLENGTH];
@@ -67,7 +73,7 @@ public class Wordle {
         for (int i = 0; i < puzzle.length(); i++) {
             char c = guess.charAt(i);
             if (result[i] != null) continue;    // if result[i] currently holds a green square, don't change it
-            if (localPuzzleCharCounts.containsKey(c)) {
+            if (localPuzzleCharCounts.(c)) {
                 result[i] = YELLOWSQUARE;
                 localPuzzleCharCounts.compute(c, (k, v) -> v == 1 ? null : v-1);
             } else {

@@ -21,25 +21,47 @@ public class SetPractice {
     }
 
     public static Set<Integer> findPrimes(int ceiling) {
-        Set<Integer> numbers = new TreeSet<>();
+        Set<Integer> sieve = new HashSet<>();
+        // fill up the set with integers up to ceiling
         for (int i = 2; i < ceiling; i++) {
-            numbers.add(i);
+            sieve.add(i);
         }
 
-        Iterator<Integer> it = numbers.iterator();
-        while (it.hasNext()) {
-            Integer x = it.next();
-            for (int y = x*2; y < ceiling; y += x) {
-                numbers.remove(y);
+        // iterate over factors up to sqrt(ceiling) and remove all multiples
+        for (int f = 2; f < Math.sqrt(ceiling); f++) {
+            if (sieve.contains(f)) {
+                for (int m = f*2; m < ceiling; m += f) {
+                    sieve.remove(m);
+                }
             }
         }
 
-        return numbers;
+        // whatever is left in the set is prime
+        return sieve;
     }
+
+    public void guessingGame() {
+        Random r = new Random();
+        int secretNumber = r.nextInt(100);
+        System.out.println("Guess a number between 1 and 100");
+        Scanner sc = new Scanner(System.in);
+        int guess = sc.nextInt();
+        Set<Integer> guesses = new HashSet<Integer>();
+        boolean didntGuessYet = guesses.add(guess);
+        if (!didntGuessYet) System.out.println("You already guessed that");
+
+
+        if (!guesses.contains(guess)) {
+            guesses.add(guess);
+            System.out.println("You already guessed that");
+        }
+    }
+
+    
 
     public static List<Integer> checkDocument(List<String> doc) {
         ListIterator<String> it = doc.listIterator();
-        List<Integer> misspelledIdx = new CLinkedList<>();
+        List<Integer> misspelledIdx = new LinkedList<>();
 
         while (it.hasNext()) {
             String word = it.next();
