@@ -1,4 +1,6 @@
-public class BST<E extends Comparable<E>> {
+import java.util.*;
+
+public class BST<E extends Comparable<E>> implements Iterable<E> {
     class Node {
         E data;
         Node left, right, parent;
@@ -6,6 +8,12 @@ public class BST<E extends Comparable<E>> {
     }
 
     Node root;
+
+    public Iterator<E> iterator() {
+        Node nd = root;
+        while (nd.left != null) nd = nd.left;
+        return new BSTIterator<E>(nd);
+    }
 
     public boolean add(E elt) {
         Node tnd = root;
@@ -35,7 +43,7 @@ public class BST<E extends Comparable<E>> {
             }
         }
         // tnd is null: this means the tree is empty and the new node should be the root
-        root = new Node(elt);;
+        root = new Node(elt);
         return true;
     }
 
@@ -62,6 +70,61 @@ public class BST<E extends Comparable<E>> {
         if (c > 0) return contains(nd.left, elt);
         return contains(nd.right, elt);
     }
+
+    public boolean remove(E elt) {
+        // find the element that should be removed
+        Node tnd = root;
+        while (tnd != null && !tnd.data.equals(elt)) {
+            if (elt.compareTo(tnd.data) < 0) tnd = tnd.left;
+            else tnd = tnd.right;
+        }
+        if (tnd == null) return false;
+
+        // the target node has been found
+        Node rnd;       // now find a replacement node
+        if (tnd.left == null && tnd.right == null)   {   // case 1: tnd is a leaf
+            rnd = null;
+        }
+        else if (tnd.left == null) {                    // case 2a: tnd only has a right child
+            rnd = tnd.right;
+        } 
+        else if (tnd.right == null) {                   // case 2b: tnd only has a left child
+            rnd = tnd.left;
+        } 
+        else {                                          // case 3: tnd has two children
+            rnd = tnd.right;
+            while (rnd.left != null) {
+                rnd = rnd.left;
+            }
+            // rnd is now equal to the *next* element: the leftmost element in the right subtree
+        }
+
+        // the replacement node has now been found
+
+        // if tnd has two children (case 4) they must be linked to rnd
+        if (tnd.left != null && tnd.right != null) {
+            rnd.left = tnd.left;
+            if (rnd.parent.left == rnd) {
+                rnd.parent.left = rnd.right;
+            } else {
+                rnd.parent.right = rnd.right;
+            }
+            rnd.right = tnd.right;
+        }
+
+        // link tnd's parent to rnd
+        if (tnd.parent.left == tnd) tnd.parent.left = rnd;
+        else tnd.parent.right = rnd;
+        rnd.parent = tnd.parent;
+
+        size--;
+        return true;
+
+    }
+
+
+
+
 
     public void print() { print(root); }
 

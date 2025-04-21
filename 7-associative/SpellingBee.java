@@ -67,7 +67,8 @@ public class SpellingBee {
         Set<Character> wordChars = new HashSet<>();
         for (char c : word.toCharArray()) wordChars.add(c);
         if (wordChars.size() == 7) {
-            points += 7;
+            
+        }            points += 7;
             message = "Pangram! ";
         }
 
