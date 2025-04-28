@@ -65,9 +65,9 @@ public class BST<E extends Comparable<E>> implements Iterable<E> {
 
     public boolean contains(Node nd, E elt) {
         if (nd == null) return false;
-        int c = nd.data.compareTo(elt);
+        int c = elt.compareTo(nd.data);
         if (c == 0) return true;
-        if (c > 0) return contains(nd.left, elt);
+        if (c < 0) return contains(nd.left, elt);
         return contains(nd.right, elt);
     }
 
@@ -140,7 +140,7 @@ public class BST<E extends Comparable<E>> implements Iterable<E> {
     }
 
     protected boolean isBST(Node nd) {
-        if (nd == null) return false;
+        if (nd == null) return true;
         if (!isBST(nd.left)) return false;
         if (!isBST(nd.right)) return false;
         if (nd.data.compareTo(max(nd.left)) > 0) return false;
