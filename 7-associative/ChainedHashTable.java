@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class LinkedHashTable<E> {
+public class ChainedHashTable<E> {
     List<E>[] data;
     float targetLoadFactor;
     int size;
@@ -15,7 +15,7 @@ public class LinkedHashTable<E> {
 
     public ChainedHashTable(int initialCapacity, float loadFactor) {
         if (loadFactor < 0) throw new IllegalArgumentException();
-        this.data = new List[initialCapacity];
+        this.data = (List<E>[]) new List[initialCapacity];
         this.targetLoadFactor = loadFactor;
     }
 
@@ -26,7 +26,7 @@ public class LinkedHashTable<E> {
     private ListIterator<E> probe(E elt) {
         int hash = elt.hashCode();
         int idx = hash % data.length;
-        if (data[idx] == null)  {
+        if (data[idx] == null)  {                           // lazy strategy: create a new list only when needed
             data[idx] = (LinkedList<E>) new LinkedList();
             return data[idx].listIterator();
         }
@@ -44,7 +44,7 @@ public class LinkedHashTable<E> {
     public boolean add(E elt) {
         if ((size / data.length) >= targetLoadFactor) grow();
         ListIterator<E> it = probe(elt);
-        it (it.hasNext()) return false;
+        if (it.hasNext()) return false;     // if the iterator has a next element, it means the element is already in the list
         it.add(elt);
         size++;
         return true;
@@ -63,17 +63,15 @@ public class LinkedHashTable<E> {
     }
 
     public boolean remove(E elt) {
-        int idx = probe(elt);
-        if (data[idx] == null) return false;
-        else {
-            data[idx] = DELETED;
-            size--;
-            return true;
-        }
+        ListIterator<E> it = probe(elt);
+        if (!it.hasNext()) return false;    // it does not have next which means the element is not in the list
+        it.remove();
+        size--;
+        return true;
     }
 
     public static void main(String[] args) {
-        HashTable<Integer> t = new HashTable<>(5);
+        ChainedHashTable<Integer> t = new ChainedHashTable<>(5);
         t.add(72);
         t.add(96);
         t.add(11);
