@@ -1,6 +1,7 @@
+import java.util.*;
+
 public class Heap<E extends Comparable<E>> {
     ArrayList<E> data;
-
 
     public Heap() {
         data = new ArrayList<>();
@@ -51,7 +52,7 @@ public class Heap<E extends Comparable<E>> {
         while (pidx >= 0 && data.get(pidx).compareTo(newElt) < 0) {        // loop while the parent is smaller than the child
             data.set(idx, data.get(pidx));
             idx = pidx;
-            pidx = parentIndex(idx);
+            pidx = parentIdx(idx);
         }
         data.set(idx, newElt);
     }
@@ -59,7 +60,7 @@ public class Heap<E extends Comparable<E>> {
     // fix a heap that is correct except for given index
     protected void heapifyDown(int i) {
         E newElt = data.get(i);
-        int idx = i, lidx = leftIndex(i), ridx = rightIndex(i);
+        int idx = i, lidx = leftChildIdx(i), ridx = rightChildIdx(i);
         boolean hasBadLeftChild = (lidx < data.size()) && (data.get(lidx).compareTo(newElt) > 0),
             hasBadRightChild = (ridx < data.size()) && (data.get(ridx).compareTo(newElt) > 0);
         while (hasBadLeftChild || hasBadRightChild) {
@@ -78,7 +79,7 @@ public class Heap<E extends Comparable<E>> {
                     idx = ridx;
                 }
             }
-            lidx = leftIndex(idx), ridx = rightIndex(idx);
+            lidx = leftChildIdx(idx); ridx = rightChildIdx(idx);
             hasBadLeftChild = (lidx < data.size()) && (data.get(lidx).compareTo(newElt) > 0),
             hasBadRightChild = (ridx < data.size()) && (data.get(ridx).compareTo(newElt) > 0);
         }
@@ -94,6 +95,20 @@ public class Heap<E extends Comparable<E>> {
         while (i >= 0) {
             heapifyDown(i);
         }
+    }
+
+    public static void main(String[] args) {
+        Heap<Integer> heap = new Heap<>();
+        heap.add(5);
+        heap.add(3);
+        heap.add(8);
+        heap.add(1);
+        heap.add(4);
+        heap.add(10);
+        heap.add(7);
+        System.out.println(heap.peek()); // should print 8
+        System.out.println(heap.poll()); // should remove and return 8
+        System.out.println(heap.peek()); // should print 5
     }
 
     
