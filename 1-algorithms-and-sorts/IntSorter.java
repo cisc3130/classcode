@@ -17,35 +17,32 @@ public class IntSorter {
     public static int[] generateIntArray() { return generateIntArray(8); }
 
     public static void printArr(Object[] arr) {
-        System.out.print("{ ");
         for (int i = 0; i < arr.length; i++) {
             System.out.print(arr[i] + " ");
         }
-        System.out.println("}");
     }
 
     public static void printArr(int[] arr) {
-        System.out.print("{ ");
         for (int i = 0; i < arr.length; i++) {
             System.out.print(arr[i] + " ");
         }
-        System.out.println("}");
     }
 
     /*********** End of pre-written code ***********/
 
-    public static void bubbleSort(Object[] arr) {
-        for (int i = 0; i < arr.length - 1; i++) {
-            boolean swapped = false;
-            for (int j = 0; j < arr.length - 1 - i; j++) {      // we can stop early because the last i elements are already sorted
-                if (arr[j].compareTo(arr[j+1]) > 0) {        // if the elements are out of order
-                    Object tmp = arr[j];           // swap them
-                    arr[j] = arr[j+1];
-                    arr[j+1] = tmp;
+    public static void bubbleSort(int[] arr) {
+        boolean swapped;
+        for (int i = 0; i < arr.length; i++) {
+            swapped = false;
+            for (int k = 0; k < arr.length-i-1; k++) {
+                if (arr[k] > arr[k+1]) {    // if the two elements are out of order
+                    int temp = arr[k];
+                    arr[k] = arr[k+1];
+                    arr[k+1] = temp;
                     swapped = true;
                 }
             }
-            if (!swapped) break;        // if nothing has been swapped, the array has been sorted
+            if (!swapped) break;
         }
     }
 
@@ -81,26 +78,24 @@ public class IntSorter {
 
     public static void selectionSort(int[] arr) {
         for (int i = 0; i < arr.length; i++) {
-            int min = arr[i];
             int minIdx = i;
-            // search for the minimum element in arr[i+1...n]
-            for (int j = i+1; j < arr.length; j++) {
-                if (arr[j] < min) {
-                    min = arr[j];
+            for (int j = minIdx + 1; j < arr.length; j++) {
+                if (arr[j] < arr[minIdx]) {
                     minIdx = j;
                 }
             }
-            // min now holds the minimum element in the range
-            // and minIdx holds the index of the min element
-            // swap the minimum element into location arr[i]
-            int tmp = arr[i];
-            arr[i] = arr[minIdx];
-            arr[minIdx] = tmp;
-        } // arr[i] now holds the ith smallest element
+            if (minIdx != i) {
+                int temp = arr[minIdx];
+                arr[minIdx] = arr[i];
+                arr[i] = temp;
+            }
+        }
     }
 
     /*
      is selection sort stable?
+     27a 27b 5 2 43
+     2 27b 5 27a 43
      2 5 27b 27a 43 
      */
 
@@ -120,14 +115,14 @@ public class IntSorter {
 
 
     public static void main(String[] args) {
-        // int[] arr = generateIntArray();
-        // printArr(arr);
+        int[] arr = generateIntArray();
+        printArr(arr);
         // bubbleSort(arr);
-        // selectionSort(arr);
+        selectionSort(arr);
         // insertionSort(arr);
-        // printArr(arr);
+        printArr(arr);
 
-        Object[] objArr = {17, 22, "hello", "goodbye", 85};
-        bubbleSort(objArr);
+        // Object[] objArr = {17, 22, "hello", "goodbye", 85};
+        // bubbleSort(objArr);
     }
 }
