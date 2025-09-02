@@ -46,6 +46,54 @@ public class IntSorter {
         }
     }
 
+    public static void stringBubbleSort(String[] arr) {
+        boolean swapped;
+        for (int i = 0; i < arr.length; i++) {
+            swapped = false;
+            for (int k = 0; k < arr.length-i-1; k++) {
+                if (arr[k].compareTo(arr[k+1]) > 0) {    // if the two elements are out of order
+                    String temp = arr[k];
+                    arr[k] = arr[k+1];
+                    arr[k+1] = temp;
+                    swapped = true;
+                }
+            }
+            if (!swapped) break;
+        }
+    }
+
+    public static void floatBubbleSort(float[] arr) {
+        boolean swapped;
+        for (int i = 0; i < arr.length; i++) {
+            swapped = false;
+            for (int k = 0; k < arr.length-i-1; k++) {
+                if (arr[k] > arr[k+1]) {    // if the two elements are out of order
+                    float temp = arr[k];
+                    arr[k] = arr[k+1];
+                    arr[k+1] = temp;
+                    swapped = true;
+                }
+            }
+            if (!swapped) break;
+        }
+    }
+
+    // public static void objectBubbleSort(Object[] arr) {
+    //     boolean swapped;
+    //     for (int i = 0; i < arr.length; i++) {
+    //         swapped = false;
+    //         for (int k = 0; k < arr.length-i-1; k++) {
+    //             if (arr[k].compareTo(arr[k+1]) > 0) {    // if the two elements are out of order
+    //                 Object temp = arr[k];
+    //                 arr[k] = arr[k+1];
+    //                 arr[k+1] = temp;
+    //                 swapped = true;
+    //             }
+    //         }
+    //         if (!swapped) break;
+    //     }
+    // }
+
     /*
      we need to sort n elements
      on the first pass, we need to look at all n elements 

@@ -8,7 +8,7 @@ class Desk implements Comparable<Desk> {
     }
 }
 
-public class GenericSorter<E extends Comparable<E>> {
+public class GenericSorter<E> {
 
     public String[] generateStringArray() {
         String[] arr = new String[10];
@@ -49,11 +49,11 @@ public class GenericSorter<E extends Comparable<E>> {
         printArr(arr);
 
         Integer[] intarr = { 3, 4, 2, 6, 8, 5, 3 };
+        GenericSorter<Integer> intSorter = new GenericSorter<>();
         printArr(intarr);
 
         Desk[] deskarr = { new Desk(), new Desk() };
         printArr(deskarr);
-
         GenericSorter<Desk> deskSorter = new GenericSorter<>();
 
         // GenericSorter<char> basicSorter = new GenericSorter<>();
