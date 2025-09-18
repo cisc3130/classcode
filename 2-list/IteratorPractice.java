@@ -3,33 +3,30 @@ import java.util.*;
 
 public class IteratorPractice {
 
-    public <E> void print(Collection<E> c) {
-        Iterator<E> it = c.iterator();
-        while (it.hasNext()) {
+   public <E> void print(Collection<E> c) {
+       Iterator<E> it = c.iterator();
+       while (it.hasNext()) {
             System.out.println(it.next());
-        }
-    }
+       }
+   }
 
-    public <E> void clear(Collection<E> c) {
+   public <E> void clear(Collection<E> c) {
         Iterator<E> it = c.iterator();
         while (it.hasNext()) {
             it.next();
             it.remove();
         }
-    }
+   }
 
-    public <E> int removeIfMatch(Collection<E> c, E target) {
-        int count = 0;
-        Iterator<E> it = c.iterator();
-        while (it.hasNext()) {
-            E elt = it.next();
-            if (elt.equals(target)) {
-                it.remove();
-                count++;
-            }
-        }
-        return count;
-    }
+   
+
+
+
+
+
+
+
+
 
     public <E extends Comparable<E>> void bubbleSort(List<E> lst) {
         if (lst.size() < 2) return;
@@ -79,11 +76,6 @@ public class IteratorPractice {
 
     public <E> void removeEveryOther(Collection<E> c) {
         Iterator<E> it = c.iterator();
-        while(it.hasNext()) {
-            it.next();
-            it.remove();
-            if (it.hasNext()) it.next();
-        }
     }
 
     public <E> void printInReverse(List<E> c) {
@@ -146,35 +138,38 @@ public class IteratorPractice {
         List<String> dll = new java.util.LinkedList<>();
         
         // fill the list up
+        String[] arr = {"hello", "goodbye", "coffee", "water", "desk", "chair"};
+        for (String s : arr) dll.add(s);
 
-
+        IteratorPractice ip = new IteratorPractice();
+        ip.clear(dll);
     
-        for (int i = 0; i < dll.size(); i++) {
-            System.out.println(dll.get(i));
-            if (dll.get(i).equals("hello")) {
-                dll.remove(i);
-            }
-        }
-        // This takes quadratic time
-        // get takes linear time
-        // remove starts again from head and takes linear time again
+        // for (int i = 0; i < dll.size(); i++) {
+        //     System.out.println(dll.get(i));
+        //     if (dll.get(i).equals("hello")) {
+        //         dll.remove(i);
+        //     }
+        // }
+        // // This takes quadratic time
+        // // get takes linear time
+        // // remove starts again from head and takes linear time again
 
 
-        for (String s : dll) {
-            System.out.println(s);
-        }
-        // can't query i
-        // can't modify the list at the location of s
+        // for (String s : dll) {
+        //     System.out.println(s);
+        // }
+        // // can't query i
+        // // can't modify the list at the location of s
 
 
-        Iterator<String> it = dll.iterator();
-        while (it.hasNext()) {
-            String s = it.next();
-            System.out.println(s);
-            if (s.equals("hello")) {
-                it.remove();
-            }
-        }
+        // Iterator<String> it = dll.iterator();
+        // while (it.hasNext()) {
+        //     String s = it.next();
+        //     System.out.println(s);
+        //     if (s.equals("hello")) {
+        //         it.remove();
+        //     }
+        // }
 
         
     }
