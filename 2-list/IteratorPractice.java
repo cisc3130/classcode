@@ -18,13 +18,52 @@ public class IteratorPractice {
         }
    }
 
-   
+   public <E> void printInReverse(List<E> lst) {
+        ListIterator<E> lit = lst.listIterator(lst.size());
+        // this returns an iterator to the end of the list
+        // lit.hasNext() at this point would return false
+        // and lit.next() would throw a NoSuchElementException
+        while (lit.hasPrevious()) {
+            System.out.println(lit.previous());
+        }
+   }
 
 
+   public boolean checkPalindrome(List<Character> clist) {
+        ListIterator<Character> fit, bit;
+        fit = clist.listIterator();     // iterator at the beginning of clist
+        bit = clist.listIterator(clist.size());     // iterator at the end of clist
+        while (fit.nextIndex() - bit.previousIndex() <= 0) {
+            Character fVal = fit.next(), bVal = bit.previous();
+            if (!fVal.equals(bVal)) {
+                return false;
+            }
+        }
+        return true;
+   }
 
 
+   public Integer accumulate (List<Integer> intList) {
+        ListIterator<Integer> lit = intList.listIterator();
+        int sum = 0;
+        while (lit.hasNext()) {
+            sum += lit.next();
+            lit.set(sum);
+        }
+   }
 
-
+   public <E> void interleave(List<E> a, List<E> b) {
+        ListIterator<E> ait, bit;
+        ait = a.listIterator();
+        bit = b.listIterator();
+        while (ait.hasNext() && bit.hasNext()) {
+            ait.next();
+            ait.add(bit.next());
+        }
+        while (bit.hasNext()) {
+            ait.add(bit.next());
+        }
+   }
 
 
 
@@ -62,28 +101,13 @@ public class IteratorPractice {
        }
     }
 
-    public boolean checkPalindrome(List<Character> str) {
-        ListIterator<Character> fit = str.listIterator(), bit = str.listIterator(str.size());
-        while (bit.previousIndex() - fit.nextIndex() > 0) {
-            if (!fit.next().equals(bit.previous())) {
-                return false;
-            }
-        }
-        return true;
-
-    }
+   
 
 
     public <E> void removeEveryOther(Collection<E> c) {
         Iterator<E> it = c.iterator();
     }
 
-    public <E> void printInReverse(List<E> c) {
-        ListIterator<E> it = c.listIterator(c.size());
-        while (it.hasPrevious()) {
-            System.out.println(it.previous());
-        }
-    }
 
     public boolean secondHalfSumIsGreater(List<Integer> lst) {
         int sum = 0;
@@ -143,6 +167,11 @@ public class IteratorPractice {
 
         IteratorPractice ip = new IteratorPractice();
         ip.clear(dll);
+
+        List<Character> palindrome = new LinkedList<>(Arrays.asList('r', 'a', 'c', 'e', 'c', 'a', 'r')),
+            notPalindrome = new LinkedList<>(Arrays.asList('r', 'a', 'd', 'e', 'c', 'a', 'r'));
+        ip.checkPalindrome(palindrome);
+        ip.checkPalindrome(notPalindrome);
     
         // for (int i = 0; i < dll.size(); i++) {
         //     System.out.println(dll.get(i));
