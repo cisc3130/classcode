@@ -84,8 +84,14 @@ import java.util.function.*;
          return birthday;
      }
 
-     public boolean isOver18() { return this.getAge() > 18; }
-      
+     public boolean isOver18() {
+         return this.getAge() > 18;
+     }
+
+     public boolean matchesCriteria(Predicate<Person> criteria) {
+         return criteria.test(this);
+     }
+
      public static int compareByAge(Person a, Person b) {
          return a.birthday.compareTo(b.birthday);
      }
@@ -176,10 +182,20 @@ public class Roster {
         
         // get people over 18
         // List<Person> peopleOver18 = r.getPeopleIf(new PersonIsOver18Predicate());
-        // List<Person> peopleOver18 = r.getPeopleIf(Person::isOver18);
-        List<Person> peopleOver18 = r.getPeopleIf(p -> p.getAge() > 18);
+
         List<Person> peopleUnder18 = r.getPeopleIf(new Predicate<P>() {
             public boolean test(Person p) { return p.getAge() < 18; }
-        };)
+        });
+
+
+        List<Person> peopleOver20 = new LinkedList<>();
+        for (Person p : r) {
+            if (p.getAge() > 20) {
+                peopleOver20.add(p);
+            }
+        }
+
+        List<Person> peopleOver18 = r.getPeopleIf(Person::isOver18);
+        List<Person> peopleOver25 = r.getPeopleIf(p -> p.getAge() > 25);
     }
 }

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class Banana {
     float size, weight, sweetness, softness, harvestTime, ripeness, acidity;
     String quality;
-    static final String GOOD = "good", BAD = "bad";
+    static final String GOOD = "Good", BAD = "Bad";
 
     public Banana(float size, float weight, float sweetness, float softness, 
             float harvestTime, float ripeness, float acidity, String quality) {
@@ -28,7 +28,7 @@ public class Banana {
     }
 
     public static List<Banana> loadBananas(String filename) {
-        List<Banana> bananas = new MArrayList<>();
+        List<Banana> bananas = new ArrayList<>();
         try {
             Scanner scanner = new Scanner(new java.io.File(filename));
             scanner.nextLine(); // Skip the header
@@ -82,8 +82,34 @@ public class Banana {
     }
 
     public static void main(String[] args) {
-        List<Banana> bananas = loadBananas("../data/banana_quality.csv");
+        List<Banana> bananas = loadBananas("data/banana_quality.csv");
 
+        long nGoodBananas = bananas.stream()
+            .filter(b -> b.isGood())
+            .count();
+
+        System.out.println(nGoodBananas);
+
+        double percentageGoodBananas = nGoodBananas / (bananas.size()+0.0) * 100.0;
+
+        System.out.println("The percentage of good bananas is " + percentageGoodBananas);
+
+        double avgGoodSweetness = bananas.stream()
+            .filter(b -> b.isGood())
+            .mapToDouble(Banana::getSweetness)
+            .average()
+            .getAsDouble();
+
+        System.out.println("The average sweetness of a good banana is " + avgGoodSweetness);
+
+        double avgBadSweetness = bananas.stream()
+            .filter(b -> !b.isGood())
+            .mapToDouble(Banana::getSweetness)
+            .average()
+            .getAsDouble();
+
+        System.out.println("The average sweetness of a bad banana is " + avgBadSweetness);
+        
     }
 
 }

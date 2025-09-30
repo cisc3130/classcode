@@ -39,4 +39,26 @@ public class SentinelLinkedList<E> {
         nnd.prev.next = nnd;
         size++;
     }
+
+    public void add(int idx, E elt) {
+        if (idx < 0 || idx > size) throw new IndexOutOfBoundsException();
+        // special case: inserting at the end of the list
+        if (idx == size) {
+            add(elt);
+            return;
+        }
+
+        Node tnd = sentinel.next;
+        for (int i = 0; i < idx; i++) {
+            tnd = tnd.next;
+        }
+        // tnd is now pointing to the node at index idx
+        Node nnd = new Node(elt);
+        nnd.prev = tnd.prev;
+                nnd.prev.next = nnd;
+        nnd.next = tnd;
+        nnd.next.prev = nnd;
+
+        size++;
+    }
 }

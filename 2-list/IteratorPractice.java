@@ -173,32 +173,32 @@ public class IteratorPractice {
         ip.checkPalindrome(palindrome);
         ip.checkPalindrome(notPalindrome);
     
-        // for (int i = 0; i < dll.size(); i++) {
-        //     System.out.println(dll.get(i));
-        //     if (dll.get(i).equals("hello")) {
-        //         dll.remove(i);
-        //     }
-        // }
-        // // This takes quadratic time
-        // // get takes linear time
-        // // remove starts again from head and takes linear time again
+        for (int i = 0; i < dll.size(); i++) {
+            System.out.println(dll.get(i));
+            if (dll.get(i).equals("hello")) {
+                dll.remove(i);
+            }
+        }
+        // This takes quadratic time
+        // get takes linear time
+        // remove starts again from head and takes linear time again
 
 
-        // for (String s : dll) {
-        //     System.out.println(s);
-        // }
-        // // can't query i
-        // // can't modify the list at the location of s
+        for (String s : dll) {
+            System.out.println(s);
+        }
+        // can't query i
+        // can't modify the list at the location of s
 
 
-        // Iterator<String> it = dll.iterator();
-        // while (it.hasNext()) {
-        //     String s = it.next();
-        //     System.out.println(s);
-        //     if (s.equals("hello")) {
-        //         it.remove();
-        //     }
-        // }
+        Iterator<String> it = dll.iterator();
+        while (it.hasNext()) {
+            String s = it.next();
+            System.out.println(s);
+            if (s.equals("hello")) {
+                it.remove();
+            }
+        }
 
         
     }
