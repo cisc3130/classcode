@@ -1,3 +1,4 @@
+import java.sql.Array;
 import java.util.*;
 
 
@@ -30,26 +31,26 @@ public class Stack<E> {
 
 
     public static <E> void removeEveryOtherElement(Stack<E> s) {
-        Stack<E> auxStack = new Stack<>();
+        Deque<E> aux = new LinkedList<>();
         while (!s.isEmpty()) {
-            auxStack.push(s.pop());
+            aux.push(s.pop());
             if (!s.isEmpty()) s.pop();
         }
-        while (!auxStack.isEmpty()) {
-            s.push(auxStack.pop());
+        while (!aux.isEmpty()) {
+            s.push(aux.pop());
         }
     }
 
-    public static <E> void moveToTop(Stack<E> s, int p) {
-        Stack<E> auxStack = new Stack<>();
+    public static <E> void moveToTop(Stack<E> s, int p) {       // 1-based indexing
+        Deque<E> aux = new ArrayDeque<>();
         for (int i = 0; i < p-1; i++) {
-            auxStack.push(s.pop());
+            aux.push(s.pop());
         }
-        E target = s.pop();
-        while (!auxStack.isEmpty()) {
-            s.push(auxStack.pop());
+        E x = s.pop();
+        while (!aux.isEmpty()) {
+            s.push(aux.pop());
         }
-        s.push(target); 
+        s.push(x);
     }
 
     public static <E> boolean balancedParens(String str) {
@@ -59,20 +60,20 @@ public class Stack<E> {
         // if it's a right bracket, compare it to the left bracket on top of the stack
         // if they match, pop the stack
         // if not, error
-        Stack<Character> leftBracketStack = new Stack<>();
+        Deque<Character> leftBracketStack = new ArrayDeque<>();
         List<Character> leftBrackets = List.of('<', '[', '{', '('),
             rightBrackets = List.of('>', ']', '}', ')');
         
         for (char c : str.toCharArray()) {
-            if (leftBrackets.contains(c)) leftBracketStack.push(c);
+            if (leftBrackets.contains(c)) leftBracketStack.addFirst(c);
             else {
                 int rightBracketIndex = rightBrackets.indexOf(c);
                 if (rightBracketIndex < 0) continue;
                 if (leftBracketStack.isEmpty()) // there are no more unmatched left brackets to match this right bracket
                     return false;
-                int leftBracketIndex = leftBrackets.indexOf(leftBracketStack.peek());
+                int leftBracketIndex = leftBrackets.indexOf(leftBracketStack.getFirst());
                 if (rightBracketIndex != leftBracketIndex) return false;    // this right bracket doesn't match the most recent unmatched left bracket
-                leftBracketStack.pop();
+                leftBracketStack.removeFirst();
             }
         }
 
@@ -126,12 +127,17 @@ public class Stack<E> {
         s.pop();
         s.pop();
         System.out.println(s.peek());
+        moveToTop(s, 2);
 
-        String ex1 = "<({[}])>",
-            ex2 = "<({]})>",
-            ex3 = "<(",
-            ex4 = "<>>";
+        // String ex1 = "<([{}()])>",
+        //     ex2 = "<({]})>",
+        //     ex3 = "<(",
+        //     ex4 = "<>>";
+        // System.out.println(balancedParens(ex1));
+        // System.out.println(balancedParens(ex2));
+        // System.out.println(balancedParens(ex3));
+        // System.out.println(balancedParens(ex4));
 
-        undoRedo();
+        // undoRedo();
     }
 }
