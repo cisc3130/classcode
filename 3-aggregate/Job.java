@@ -71,7 +71,7 @@ public class Job {
     }
 
     public static List<Job> loadJobs() {
-        File f = new File("../data/CalCareerData.dat");
+        File f = new File("/workspaces/classcode/data/CalCareerData.dat");
         List<Job> jobs = new MArrayList<Job>();
         try {
             Scanner sc = new Scanner(f);
@@ -142,8 +142,8 @@ public class Job {
 
         System.out.println("Jobs with top five highest max salary:");
         jobs.stream()
-            .sorted((j1, j2) -> Float.compare(j2.getSalaryMax(), j1.getSalaryMax()))
-            .limit(5)
+            .sorted((j1, j2) -> (int) (j2.getSalaryMax() - j1.getSalaryMax()))
+            .limit(5)   
             .forEach(System.out::println);
 
         System.out.println("With an iterator:");
@@ -156,6 +156,14 @@ public class Job {
         System.out.println("Are there any jobs that are intermittent with a salary greater than 30K? " +  
             jobs.stream()
             .anyMatch(j -> j.getWorkType().contains("Intermittent") && j.getSalaryMin() >= 30000));
+
+        // What is the average min salary for intermittent jobs?
+        double averageIntermittentSalary = jobs.stream()
+            .filter(j -> j.getWorkType().contains("Intermittent"))
+            .mapToDouble(Job::getSalaryMin)
+            .average()
+            .orElse(0.0);
+        System.out.println("Average salary for intermittent jobs: " + averageIntermittentSalary);
 
         System.out.print("With an iterator: ");
         it = jobs.iterator();
@@ -175,6 +183,21 @@ public class Job {
             .filter(j -> j.getLocation().equals("Sacramento County"))
             .collect(Collectors.toList());
 
+        // How many jobs have "DENTAL" in the listing?
+        long dentalJobsCount = jobs.stream()
+            .filter(j -> j.getJobListing().contains("DENTAL"))
+            .count();
+        System.out.println("Number of jobs with 'DENTAL' in the listing: " + dentalJobsCount);
+
+        // What is the average max salary for jobs in Sacramento County?
+        double averageSacramentoMaxSalary = jobs.stream()
+            .filter(j -> j.getLocation().equals("Sacramento County"))
+            .mapToDouble(Job::getSalaryMax)
+            .average()
+            .orElse(0.0);
+        System.out.println("Average max salary for jobs in Sacramento County: " + averageSacramentoMaxSalary);
+
+    
     }
 
 }

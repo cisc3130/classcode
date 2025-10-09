@@ -12,7 +12,9 @@ public class WordsAnalysis {
         try {
             Scanner freader = new Scanner(f);
             while (freader.hasNextLine()) {
-                words.add(freader.nextLine());
+                String word = freader.nextLine();
+                words.add(word);
+                // System.out.print(word);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -23,41 +25,50 @@ public class WordsAnalysis {
     public static void main(String[] args) {
         WordsAnalysis w = new WordsAnalysis();
 
-        // average length of words 
-        double wordLengthSum = 0.0;
-        for (String word : w.words) wordLengthSum += word.length();
-        double average = wordLengthSum / w.words.size();
+        // // average length of words 
+        // int sum = 0;
+        // for (int i = 0; i < w.words.size(); i++) {
+        //     String word = w.words.get(i);
+        //     sum += word.length();
+        // }
+        // double average = (double) sum / w.words.size();
+        // System.out.println("Average word length: " + average);
 
-        // average length of words using streams
-        System.out.println(w.words.stream()
+        int sum = 0;
+        for (String s : w.words) {
+            sum += s.length();
+        }
+        double average2 = (double) sum / w.words.size();
+        System.out.println("Average word length (for-each): " + average2);
+
+        double average3 = w.words.stream()
             .mapToInt(String::length)
             .average()
-            .getAsDouble()
-            );
-        
-        // how many words start with X
-        System.out.println(w.words.stream()
-            .filter(x -> x.startsWith("x"))
-            .count()
-             + " words start with 'x'");
+            .orElse(0.0);
+        System.out.println("Average word length (stream): " + average3);
 
-        // do any words have 5 letters and start with 'dh'
-        System.out.println(
-            w.words.stream()
-                .anyMatch(x -> x.length() == 5 && x.startsWith("dh"))
-        );
+        // how many words start with q?
+        long count = w.words.stream()
+            .filter(s -> s.startsWith("q"))
+            .count();
+        System.out.println("Words starting with 'q': " + count);
 
-        // print out words that have 5 letters and start with 'dh'
+        // do any words have 5 letters and start with "dh"
+        boolean anyMatch = w.words.stream()
+            .anyMatch(s -> s.length() == 5 && s.startsWith("dh"));
+        System.out.println("Any words with 5 letters starting with 'dh': " + anyMatch);
+
+        // print out the words that have 5 letters and start with "dh"
         w.words.stream()
-            .filter(x -> x.length() == 5 && x.startsWith("dh"))
+            .filter(s -> s.length() == 5 && s.startsWith("dh"))
             .forEach(System.out::println);
 
+        // find the longest word
+        String longest = w.words.stream()
+            .max(Comparator.comparingInt(String::length))
+            .orElse("");
+        System.out.println("Longest word: " + longest);
 
-        transactions.stream()
-            .filter(t -> t.getCategory().equals("gasoline") && t.getYear() == 2022)
-            .mapToDouble(Transaction::getAmount)
-            .sum();
-
+        
     }
-
 }
