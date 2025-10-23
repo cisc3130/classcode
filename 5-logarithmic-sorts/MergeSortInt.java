@@ -28,7 +28,7 @@ public class MergeSortInt {
             // compare scratch[nextFirst] to arr[nextSecond]
             // write whichever is smaller into arr[nextWrite]
             // advance whichever pointer was smaller
-            arr[nextWrite++] = scratch[nextFirst] < arr[nextSecond] ? arr[nextFirst++] : arr[nextSecond++];
+            arr[nextWrite++] = scratch[nextFirst] < arr[nextSecond] ? scratch[nextFirst++] : arr[nextSecond++];
         }
         while (nextFirst < (middle - begin)) {
             arr[nextWrite++] = scratch[nextFirst++];

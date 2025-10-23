@@ -50,32 +50,38 @@ public class LogSorts {
 
 
     public static <E extends Comparable<E>> void mergeSort(E[] arr, int begin, int end) {
-        if (end - begin <= 1) return;       // base case: if there is just 1 or 0 elements the range is sorted
+        // base case: only 1 or 0 elements: subarray is trivially sorted
+        if (begin - end <= 1) {
+            return;     
+        }
 
-        int middle = begin + (int) Math.ceil((end - begin)/2.0);
+        // recurse on the two halves of the subarray
+        int middle = (end - begin) / 2 + begin;
         mergeSort(arr, begin, middle);
         mergeSort(arr, middle, end);
 
-        // combine
-        E[] scratchArr = Arrays.copyOfRange(arr, begin, middle);
-        int toIdx = begin, leftIdx = 0, rightIdx = middle;
-        while (leftIdx < scratchArr.length && rightIdx < end) {
-            if (scratchArr[leftIdx].compareTo(arr[rightIdx]) <= 0) {
-                arr[toIdx] = scratchArr[leftIdx];
+        // the two halves of the subarray are now sorted
+        // now we can combine in linear time
+        E[] scratch = Arrays.copyOfRange(arr, begin, middle);    // copy the left half into scratch space
+        int writeIdx = begin, leftIdx = 0, rightIdx = middle,
+            leftEnd = scratch.length, rightEnd = end;
+        while (leftIdx < leftEnd && rightIdx < rightEnd) {
+            if (scratch[leftIdx].compareTo(arr[rightIdx]) <= 0) {   // the element in the left half is smaller or equal to the element in the right half
+                arr[writeIdx] = scratch[leftIdx];
                 leftIdx++;
             } else {
-                arr[toIdx] = arr[rightIdx];
+                arr[writeIdx] = arr[rightIdx];
                 rightIdx++;
             }
-            toIdx++;
+            writeIdx++;
         }
-        while (leftIdx < scratchArr.length) {
-            arr[toIdx++] = scratchArr[leftIdx++];
+        // cleanup after one of the idxs reaches the end. Only one of these while loops will run
+        while (leftIdx < leftEnd) {
+            arr[writeIdx++] = scratch[leftIdx++];
         }
-        while (rightIdx < end) {
-            arr[toIdx++] = arr[rightIdx++];
+        while (rightIdx < rightEnd) {        // this while loop isn't actually necessary
+            arr[writeIdx++] = arr[rightIdx++];  // the rightmost elements are already in the right place
         }
-
 
     }
 
@@ -90,7 +96,7 @@ public class LogSorts {
 
     public static void main(String[] args) {
         Integer[] arr = { 2, 5, 7, 1, 6, 3, 8, 4 };
-        quickSort(arr, 0, 8);
+        mergeSort(arr, 0, 8);
         for (int i = 0; i < arr.length; i++) System.out.print(arr[i] + " ");
         System.out.println();
     }
