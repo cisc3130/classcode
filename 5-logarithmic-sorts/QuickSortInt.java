@@ -21,7 +21,7 @@ public class QuickSortInt {
         arr[end-1] = tmp;
 
         int nextAvailableIdx = begin, nextCompareIdx = begin;
-        while (nextCompareIdx < pidx) {
+        while (nextCompareIdx < end-1) {
             if (arr[nextCompareIdx] < arr[pidx]) {
                 // swap the element we compared into the nextAvailableIndex
                 tmp = arr[nextAvailableIdx];

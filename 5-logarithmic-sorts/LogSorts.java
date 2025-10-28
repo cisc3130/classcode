@@ -3,45 +3,39 @@ import java.util.*;
 public class LogSorts {
 
     public static <E extends Comparable<E>> void quickSort(E[] arr, int begin, int end) {
-        if (end - begin <= 1) return;       // base case: if there is just 1 or 0 elements the range is sorted
-        if (end - begin == 2) {
-            if (arr[begin].compareTo(arr[begin+1]) > 0) {
-                E tmp = arr[begin];
-                arr[begin] = arr[begin+1];
-                arr[begin+1] = tmp;
-            }
-            return;
-        }       // optional base case to prevent a lot of unnecessary recursion when the range size gets down to 2
+        // base case: only 1 or 0 elements: subarray is trivially sorted
+        if (begin - end <= 1) return;
 
+        // choose pivot
         int pivotIdx = choosePivot(arr, begin, end);
-        int nextAvailableIdx = begin, nextCompareIdx = begin;
-        
-        // swap pivot to the last element
-        E gtmp = arr[pivotIdx];
-        arr[pivotIdx] = arr[end-1];
-        arr[end-1] = gtmp;
-        pivotIdx = end-1;
+        E pivot = arr[pivotIdx];
 
-        while (nextCompareIdx < pivotIdx) {
-            if (arr[nextCompareIdx].compareTo(arr[pivotIdx]) < 0) {     
-                // the element we're up to is smaller than the pivot
-                // swap it into the next available spot
-                E tmp = arr[nextAvailableIdx];
-                arr[nextAvailableIdx] = arr[nextCompareIdx];
-                arr[nextCompareIdx] = tmp;
-                nextAvailableIdx++;
-            } 
-            nextCompareIdx++;
+        // partitioning step
+        // move pivot to end
+        E tmp = arr[end-1];
+        arr[end-1] = pivot;
+        arr[pivotIdx] = tmp;
+
+        int writeIdx = begin, readIdx = begin;
+        while (readIdx != end-1) {
+            if (arr[readIdx].compareTo(pivot) < 0)  {  // the value we just read is smaller than the pivot  
+                // swap it into arr[writeIdx]
+                tmp = arr[writeIdx];
+                arr[writeIdx] = arr[readIdx];
+                arr[readIdx] = tmp;
+                // move writeIdx forward - this index is no longer available to write to
+                writeIdx++;
+            }
+            readIdx++;
         }
+        // swap the pivot into writeIdx. Everything to the left of writeIdx is smaller than the pivot
+        // and everything to the right of it is larger, so this is the correct spot for the pivot
+        arr[end-1] = arr[writeIdx];
+        arr[writeIdx] = pivot;
 
-        // swap pivot to nextAvailableIdx
-        gtmp = arr[pivotIdx];
-        arr[pivotIdx] = arr[nextAvailableIdx];
-        arr[nextAvailableIdx] = gtmp;
-        pivotIdx = nextAvailableIdx;
-
-        quickSort(arr, begin, pivotIdx);
-        quickSort(arr, pivotIdx+1, end);
+        // recurse on both sides of the pivot
+        quickSort(arr, begin, writeIdx);
+        quickSort(arr, writeIdx+1, end);
     }
 
     public static <E extends Comparable<E>> int choosePivot(E[] arr, int begin, int end) {
@@ -96,7 +90,7 @@ public class LogSorts {
 
     public static void main(String[] args) {
         Integer[] arr = { 2, 5, 7, 1, 6, 3, 8, 4 };
-        mergeSort(arr, 0, 8);
+        quickSort(arr, 0, 8);
         for (int i = 0; i < arr.length; i++) System.out.print(arr[i] + " ");
         System.out.println();
     }
