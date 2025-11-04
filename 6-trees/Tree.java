@@ -56,49 +56,48 @@ public class Tree<E> {
 
     public void printTree() {
         if (root == null) return;
-        Deque<TreeNode> unvisited = new ArrayDeque<>();
-        unvisited.addLast(root);
+        Deque<TreeNode> unvisited = new ArrayDeque<>();     // create a data structure to hold all the addresses we see
+        unvisited.offer(root);           // start it off with the root
         while (!unvisited.isEmpty()) {
-            // remove the next node from unvisited
-            TreeNode nd = unvisited.removeFirst();
-            // ****visit****
-            System.out.print(nd.data + " ");
-            // add its children to unvisited
-            for (TreeNode c : nd.children) unvisited.addLast(c);
+            TreeNode toVisit = unvisited.poll();
+            System.out.print(toVisit.data + " ");   // visit the node
+            // add the node's children to unvisited
+            for (TreeNode c : toVisit.children) {
+                unvisited.offer(c);
+            }
         }
-        System.out.println();
     }
 
     public boolean contains(E elt) {
-        if (root == null) return false;     // tree is empty, does not contain elt
+        if (root == null) return false;
         Deque<TreeNode> unvisited = new ArrayDeque<>();
-        unvisited.addLast(root);
+        unvisited.offer(root);
         while (!unvisited.isEmpty()) {
-            // remove the next node from unvisited
-            TreeNode nd = unvisited.removeFirst();
-            // ****visit****
-            if (nd.data.equals(elt)) {
-                return true;                    // elt was found, can stop looking
+            TreeNode toVisit = unvisited.poll();
+            if (toVisit.data.equals(elt)) {
+                return true;
             }
-            // add its children to unvisited
-            for (TreeNode c : nd.children) unvisited.addLast(c);
+            for (TreeNode c : toVisit.children) {
+                unvisited.offer(c);
+            }
         }
-        return false;   // all elements have been visited and elt was not found
+        return false;
     }
 
     public void findReplace(E findVal, E replaceVal) {
         if (root == null) return;
         Deque<TreeNode> unvisited = new ArrayDeque<>();
-        unvisited.addLast(root);
+        unvisited.offer(root);
         while (!unvisited.isEmpty()) {
-            TreeNode nd = unvisited.removeFirst();
-            // ***visit***
-            if (nd.data.equals(findVal)) {
-                nd.data = replaceVal;
+            TreeNode toVisit = unvisited.poll();
+            if (toVisit.data.equals(findVal)) {
+                toVisit.data = replaceVal;
             }
-            // add children to unvisited
-            for (TreeNode c : nd.children) unvisited.addLast(c);
+            for (TreeNode c : toVisit.children) {
+                unvisited.offer(c);
+            }
         }
+        return;
     }
 
   
@@ -112,6 +111,23 @@ public class Tree<E> {
             if (contains(elt, cnd)) return true;
         }
         return false;
+    }
+
+    public int countTarget(E target) {
+        if (root == null) return 0;
+        Deque<TreeNode> unvisited = new ArrayDeque<>();
+        unvisited.push(root);
+        int count = 0;
+        while (!unvisited.isEmpty()) {
+            TreeNode toVisit = unvisited.pop();
+            if (toVisit.data.equals(target)) {
+                count++;
+            }
+            for (TreeNode c : toVisit.children) {
+                unvisited.push(c);
+            }
+        }
+        return count;
     }
 
     public int size() {
@@ -130,23 +146,67 @@ public class Tree<E> {
         return count;
     }
 
-    // pseudocode
-    public void killProcess(Process p) {
-        if (p == null) return;
-        for (Process cp : p.children) killProcess(cp);
-        p.status = "terminated";
-        delete p.memory;
-        for (File f : p.file) f.close();
-
+    public int sizeRecursive(TreeNode nd) {
+        if (nd == null) return 0;
+        int size = 1;       // count yourself
+        for (TreeNode c : nd.children) {
+            size += sizeRecursive(c);
+        }
+        return size;
     }
+
+    public boolean containsRecursive(TreeNode nd, E target) {
+        if (nd == null) return false;
+        if (nd.data.equals(target)) return true;
+        for (TreeNode c : nd.children) {
+            if (containsRecursive(c, target)) {
+                return true;
+            }
+        }   
+        return false;
+    }
+
+    public int depth(TreeNode nd) {
+        if (nd == null) return -1;
+        int maxDepth = -1;
+        for (TreeNode c : nd.children) {
+            int d = depth(c);
+            if (d > maxDepth) {
+                maxDepth = d;
+            }
+        }
+        return maxDepth + 1;
+    }
+
+    public E maxVal(TreeNode nd) {
+        if (nd == null) return null;
+        E maxVal = nd.data;
+        for (TreeNode c : nd.children) {
+            E val = maxVal(c);
+            if (maxVal.compareTo(val) < 0) {
+                maxVal = val;
+            }
+        }
+        return maxVal;
+    }
+
+    // pseudocode
+    // public void killProcess(Process p) {
+    //     if (p == null) return;
+    //     for (Process cp : p.children) killProcess(cp);
+    //     p.status = "terminated";
+    //     delete p.memory;
+    //     for (File f : p.file) f.close();
+
+    // }
 
     public static void main(String[] args) {
         Tree<String> foodTree = buildFoodTree();
         foodTree.printTree();
 
-        System.out.println(foodTree.contains("Bird"));
-        System.out.println(foodTree.contains("Salmon"));
+        // System.out.println(foodTree.contains("Bird"));
+        // System.out.println(foodTree.contains("Salmon"));
 
-        System.out.println(foodTree.size());
+        // System.out.println(foodTree.size());
     }
 }
