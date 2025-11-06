@@ -42,8 +42,8 @@ public class BinaryTree<E> {
     public void printTree(BTNode nd) {
         if (nd == null) return;
         printTree(nd.left);
-        System.out.print(nd.data + " ");
         printTree(nd.right);
+        System.out.print(nd.data + " ");
     }
 
     public int getSize(BTNode nd) {
@@ -87,18 +87,29 @@ public class BinaryTree<E> {
         return Math.max(nd.data, Math.max(maxValInLeftSubtree, maxValInRightSubtree));
     }
 
+    public BTNode copyTree(BTNode nd) {
+        if (nd == null) return null;
+        // create a copy of the current node
+        BTNode cnd = new BTNode(nd.data);
+        BTNode cl = copyTree(nd.left), 
+            cr = copyTree(nd.right);
+        if (cl != null) cnd.addLeft(cl);
+        if (cr != null) cnd.addRight(cr);
+        return cnd;
+    }
+
     
 
 
 
     public static void main(String[] args) {
         BinaryTree<Integer> t = buildTree();
-        System.out.print("Inorder traversal of the tree: ");
+        System.out.print("Postorder traversal of the tree: ");
         t.printTree(t.root);
         System.out.println(); // For a new line after printing the tree
         // Output should be: 8 7 10 18 20 25 30
-        int depth = t.getTreeDepth(t.root);
-        System.out.println("Depth of the tree: " + depth);
+        // int depth = t.getTreeDepth(t.root);
+        // System.out.println("Depth of the tree: " + depth);
     }
 
 
