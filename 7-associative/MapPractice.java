@@ -42,16 +42,24 @@ public class MapPractice {
     });
 
     public static void main(String[] args) {
-        Map<String, Double> items = new HashMap<>();
+        Map<String, Double> items = new TreeMap<>((s1, s2) -> s1.length() - s2.length());
         items.put("ruler", 5.99);
-        items.put("phone", 600.99);
+        // items.put("phone", 600.99);
         items.put("desk", 3999.99);
+        items.put("computer", 1299.99);
+
         System.out.println("The cost of a ruler is $" + items.get("ruler"));
+
         Double phonePrice = items.get("phone");
         if (phonePrice == null) System.out.println("We don't sell phones");
         else System.out.println("The cost of a phone is $" + phonePrice);
-        Double oldRulerPrice = items.put("ruler", 6.99);
-        System.out.println("Rulers used to cost " + oldRulerPrice + ", now they cost " + newRulerPrice);
+
+        Double newRulerPrice = 6.99;
+        Double oldRulerPrice = items.put("ruler", newRulerPrice);
+        if (oldRulerPrice != null) {
+            System.out.println("Rulers used to cost " + oldRulerPrice + ", now they cost " + newRulerPrice);
+        }
+
         Double oldDeskPrice = items.remove("desk");
         System.out.println("We no longer sell desks. They used to cost " + oldDeskPrice);
         assert(items.get("desk") == null);

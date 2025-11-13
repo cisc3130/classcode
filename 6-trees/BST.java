@@ -141,25 +141,26 @@ public class BST<E extends Comparable<E>> implements Iterable<E> {
 
 
 
-    public void print() { print(root); }
+    public void print() { System.out.println(toString(root)); }
 
-    protected void print(Node nd) {
-        // base case
-        if (nd == null) return;
-        // recurse left (L)
-        if (nd.left != null) print(nd.left);
-        // visit (V)
-        System.out.print(nd.data + " ");
-        // recurse right (R)
-        if (nd.right != null) print(nd.right);
+    public String toString() { return toString(root); }
+
+    protected String toString(Node nd) {
+        if (nd == null) return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append(toString(nd.left));
+        sb.append(nd.data.toString());
+        sb.append(toString(nd.right));
+        return sb.toString();
     }
 
     protected boolean isBST(Node nd) {
         if (nd == null) return true;
+        E maxLeft = max(nd.left), minRight = min(nd.right);
+        if (maxLeft != null && maxLeft.compareTo(nd.data) > 0) return false;
+        if (minRight != null && minRight.compareTo(nd.data) < 0) return false;
         if (!isBST(nd.left)) return false;
         if (!isBST(nd.right)) return false;
-        if (nd.data.compareTo(max(nd.left)) > 0) return false;
-        if (nd.data.compareTo(min(nd.right)) < 0) return false;
         return true;
     }
 
