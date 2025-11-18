@@ -1,45 +1,105 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.*;
 
 public class MapPractice {
 
     Map<String, Long> dictionary;
 
-    public void loadBook(String filename) {
-        Map<String, Long> wordCounts = new HashMap<>();
+    protected static Integer incrementCount(String word, Integer count) {
+        if (count == null) {
+            return 1;
+        } else {
+            return count+1;
+        }
+    }
+
+    public Map<String, List<Integer>> buildConcordance(String filename) {
+        Map<String, List<Integer>> concordance = new TreeMap<>();
+        BufferedReader reader = new BufferedReader(new FileReader(filename))
+        String line;
+        int lineNumber = 1;
+        while ((line = reader.readLine()) != null) {
+            String[] words = line.split(" ");
+            for (String word : words) {
+                // for every word on line #x, add x to that word's list of line numbers
+                word = word.toLowerCase();
+                // if (concordance.containsKey(word)) {
+                //     List<Integer> lst = concordance.get(word);
+                //     lst.add(lineNumber);
+                // } else {
+                //     List<Integer> lst = new ArrayList<>();
+                //     lst.add(lineNumber);
+                //     concordance.put(word, lst);
+                // }    ^ This is inefficient, requires two searches
+                List<Integer> lineList = concordance.computeIfAbsent(word, word -> new LinkedList<Integer>());
+                lineList.add(lineNumber);
+            }
+            lineNumber++;
+        }
+    }
+
+    public Map<String, Integer> wordCountBook(String filename) {
+        // count the number of times each word appears in the file
+        Map<String, Integer> wordCounts = new HashMap<>();
         Scanner sc = new Scanner(filename);
         while (sc.hasNext()) {
             String word = sc.next().toLowerCase();
+            // // if the word is already in the map
             // if (wordCounts.containsKey(word)) {
-            //     wordCounts.put(word, wordCounts.get(word) + 1);
+            //     // get its value and increment it by 1
+            //     Integer c = wordCounts.get(word);
+            //     wordCounts.put(word, c+1);
             // } else {
-            //     wordCounts.put(word, Long.valueOf(1));
-            // }    // this is three queries
-            // wordCounts.put(word, wordCounts.getOrDefault(word, 0L) + 1); // this is two queries
-            wordCounts.compute(word, (k, v) -> v == null ? 1 : v + 1); // this is one query
+            //     // put it in with a value of 1
+            //     wordCounts.put(word, 1);
+            // }
+            // // ^ this is three separate searches
 
-            // // recreate putIfAbsent
-            // wordCounts.compute(word, (k, v) -> v == null ? newValue : v);
+            // Integer c = wordCounts.get(word);
+            // if (c != null) wordCounts.put(word, c+1);
+            // else wordCounts.put(word, 1);
+            // // ^ this is two searches
 
-            // // recreate putIfPresent (replace)
-            // wordCounts.compute(word, (k, v) -> v == null ? null : newValue);
+            // // same thing with getOrDefault:
+            // c = wordCounts.getOrDefault(word, 0);
+            // wordCounts.put(word, c+1);
+            // // ^ same two searches but we can avoid the if/else by giving it a default
+            // // value instead of null
 
-            // // recreate replace (key, oldValue, newValue)
-            // wordCounts.compute(word, (k, v) -> v.equals(oldValue) ? newValue : v);
+            // we can get it down to one search:
+            wordCounts.compute(word, (k, v) -> v == null ? 1 : v+1);
+
+            // wordCounts.compute(word, MapPractice::incrementCount);
+            
+            // // same thing using merge
+            // wordCounts.merge(word, 1, (v1, v2) -> v1 + 1);
         }
-
+        return wordCounts;
     }
 
-    protected V complicatedValueMapping(K key, V oldValue) {
-        if (key.startsWith('L') && oldValue > 10) {
-            return "hello";
-        }
+    // protected V complicatedValueMapping(K key, V oldValue) {
+    //     if (key.startsWith('L') && oldValue > 10) {
+    //         return "hello";
+    //     }
+    // }
+
+
+    public static Map<Integer, Integer> fibMemo = new TreeMap<>();
+    public static int fib(int n) {
+        if (n == 0 || n == 1) return 1;
+        // if (fibMemo.containsKey(n)) return fibMemo.get(n);
+        
+        // Integer m = fibMemo.get(n);
+        // if (m != null) return m;
+        // int fibRes = fib(n-1) + fib(n-2);
+        // fibMemo.put(n, fibRes);
+        // return fibRes;
+
+        Integer fibRes = fibMemo.computeIfAbsent(n, k -> fib(n-1) + fib(n-2));
+        return fibRes;
     }
 
-    map.compute(key, new class BiFunction<K, V> {
-        public V apply(K key, V oldValue) {
-            return new V();
-        }
-    });
 
     public static void main(String[] args) {
         Map<String, Double> items = new TreeMap<>((s1, s2) -> s1.length() - s2.length());
