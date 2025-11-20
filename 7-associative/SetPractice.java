@@ -8,7 +8,7 @@ public class SetPractice {
 
     public static Set<String> loadDictionary() {
         String dictfile = "../words_alpha.txt";
-        Set<String> dictionary = new HashSet<>();
+        Set<String> dictionary = new TreeSet<>();
         try (Scanner sc = new Scanner(SetPractice.class.getResource
                 (dictfile).openStream())) {
             while (sc.hasNext()) {
@@ -42,18 +42,24 @@ public class SetPractice {
 
     public void guessingGame() {
         Random r = new Random();
-        int secretNumber = r.nextInt(100);
+        int secretNumber = r.nextInt(100) + 1;
+        int numGuesses = 0;
         System.out.println("Guess a number between 1 and 100");
+        System.out.println("You guessed " + numGuesses + " times so far");
         Scanner sc = new Scanner(System.in);
         int guess = sc.nextInt();
-        Set<Integer> guesses = new HashSet<Integer>();
-        boolean didntGuessYet = guesses.add(guess);
-        if (!didntGuessYet) System.out.println("You already guessed that");
-
-
-        if (!guesses.contains(guess)) {
-            guesses.add(guess);
-            System.out.println("You already guessed that");
+        Set<Integer> alreadyGuessed = new TreeSet<>();
+        while (guess != secretNumber) {
+            boolean seen = !alreadyGuessed.add(guess);
+            if (!seen) {
+                numGuesses++;
+                System.out.println("Wrong. You have guessed " + numGuesses + " times so far.");
+                alreadyGuessed.add(guess);
+            } else {
+                System.out.println("You already guessed that.");
+            }
+            System.out.println("Guess a number between 1 and 100");
+            guess = sc.nextInt();
         }
     }
 
@@ -66,7 +72,13 @@ public class SetPractice {
         while (it.hasNext()) {
             String word = it.next();
             if (!dictionary.contains(word)) {
-                misspelledIdx.add(it.previousIndex());
+                System.out.println(word + " is misspelled. Do you want to add it to the dictionary?");
+                Scanner sc = new Scanner(System.in);
+                String response = sc.next();
+                if (response.equals("yes")) {
+                    dictionary.add(word);
+                }
+                else { misspelledIdx.add(it.previousIndex()); }
             }
         }
 
@@ -76,6 +88,15 @@ public class SetPractice {
     public static <E> boolean containsDuplicates(List<E> lst) {
         Set<E> s = new TreeSet<>(lst);
         return s.size() < lst.size();
+
+        Set<E> s1 = new TreeSet<>();
+        for (E elt : lst) {
+            boolean alreadySeen = !s1.add(elt);
+            if (alreadySeen) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static <E> void findDuplicates(List<E> lst) {
@@ -83,7 +104,8 @@ public class SetPractice {
         ListIterator<E> it = lst.listIterator();
         while (it.hasNext()) {
             E elt = it.next();
-            if (!seen.add(elt)) {
+            boolean alreadySeen = !seen.add(elt);
+            if (alreadySeen) {
                 System.out.println(String.format("Element %s at %d is a duplicate", elt, it.previousIndex()));
             }
         }

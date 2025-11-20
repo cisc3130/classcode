@@ -39,6 +39,34 @@ public class MapPractice {
         }
     }
 
+    public <K, V> void printMap(Map<K, V> m) {
+        for (K key : m.keySet()) {
+            System.out.println(key + ": " + m.get(key));
+        }
+        for (Map.Entry<K, V> entry : m.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    public <K> void incrementMap(Map<K, Integer> m) {
+        for (K key : m.keySet()) {
+            m.compute(key, (k, v) -> v+1);
+        }
+        for (Map.Entry<K, Integer> entry : m.entrySet()) {
+            entry.setValue(entry.getValue()+1);
+        }
+    }
+
+    public <K> void removeItemsGreaterThan(Map<K, Float> m, float threshold) {
+        Collection<Float> c = m.values();
+        Iterator<Float> it = c.iterator();
+        while (it.hasNext()) {
+            if (it.next().compareTo(threshold) > 0) {
+                it.remove();
+            }
+        }
+    }
+
     public Map<String, Integer> wordCountBook(String filename) {
         // count the number of times each word appears in the file
         Map<String, Integer> wordCounts = new HashMap<>();

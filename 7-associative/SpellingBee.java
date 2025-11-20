@@ -60,15 +60,14 @@ public class SpellingBee {
         alreadyFound.add(word);
         int points;
         String message = "";
-        if (wordLength == 4) points = 1;
+        if (wordLength == MIN_LENGTH) points = 1;
         else points = wordLength;
 
         // if it's a pangram, add another 7 points
         Set<Character> wordChars = new HashSet<>();
         for (char c : word.toCharArray()) wordChars.add(c);
         if (wordChars.size() == 7) {
-            
-        }            points += 7;
+            points += 7;
             message = "Pangram! ";
         }
 
@@ -92,7 +91,7 @@ public class SpellingBee {
     }
 
     public static void main(String[] args) {
-        SpellingBee sb = new SpellingBee("PKINGRA");
+        SpellingBee sb = new SpellingBee("EGIUNTY");
         sb.play();
     }
 }
