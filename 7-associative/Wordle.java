@@ -7,10 +7,14 @@ public class Wordle {
     Set<String> dictionary;
     // Set<Character> puzzleChars;
     Map<Character, Integer> puzzleCharCounts;
+    Set<String> alreadyGuessed;
     final String GREENSQUARE = "🟩", YELLOWSQUARE = "🟨", GRAYSQUARE = "⬜";
     final int WORDLENGTH = 5, NUMGUESSES = 6;
     final String WINSTRING = "🟩🟩🟩🟩🟩";
-    Set<String> alreadyGuessed;
+    final String GREEN_PREFIX = "\033[42m";
+    final String YELLOW_PREFIX = "\033[43m";
+    final String GRAY_PREFIX = "\033[100m";
+    final String COLOR_POSTFIX = "\033[0m";
 
     public Wordle(String puzzle) {
         this.puzzle = puzzle;
@@ -39,8 +43,12 @@ public class Wordle {
     }
 
     public String checkGuess(String guess) {
+        guess = guess.toUpperCase();
+        if (guess.equals(puzzle)) {
+            return WINSTRING;
+        }
         if (guess.length() != WORDLENGTH) {
-            System.out.println("Guess must have" + WORDLENGTH + " letters");
+            System.out.println("Guess must have " + WORDLENGTH + " letters");
             return null;
         }
         boolean didntGuessYet = alreadyGuessed.add(guess);
@@ -54,11 +62,13 @@ public class Wordle {
         }
         
         Map<Character, Integer> localPuzzleCharCounts = new TreeMap<>(puzzleCharCounts);    // deep copy
-        // NOT Map<Character, Integer> localPuzzleCharCounts = puzzleCharCounts; // shallow copy
+        // NOT Map<Character, Integer> localPuzzleCharCounts = puzzleCharCounts; // shallow copy: don't do this
         String [] result = new String[WORDLENGTH];
+        // start by looking for green squares
         for (int i = 0; i < puzzle.length(); i++) {
             if (guess.charAt(i) == puzzle.charAt(i)) { 
-                result[i] = GREENSQUARE;
+                // result[i] = GREENSQUARE;
+                result[i] = GREEN_PREFIX + guess.charAt(i) + COLOR_POSTFIX;
                 localPuzzleCharCounts.compute(guess.charAt(i), (k, v) -> v == 1 ? null : v - 1);
                 /* 
                  * We could write this as:
@@ -70,18 +80,19 @@ public class Wordle {
                  */
             }
         }
+        // now look for yellow and gray squares
         for (int i = 0; i < puzzle.length(); i++) {
             char c = guess.charAt(i);
             if (result[i] != null) continue;    // if result[i] currently holds a green square, don't change it
-            if (localPuzzleCharCounts.(c)) {
-                result[i] = YELLOWSQUARE;
+            if (localPuzzleCharCounts.containsKey(c)) {
+                result[i] = YELLOW_PREFIX + c + COLOR_POSTFIX;
                 localPuzzleCharCounts.compute(c, (k, v) -> v == 1 ? null : v-1);
             } else {
-                result[i] = GRAYSQUARE;
+                result[i] = GRAY_PREFIX + c + COLOR_POSTFIX;
             }
         }
 
-        String resultString = Arrays.stream(result).collect(Collectors.joining(""));
+        String resultString = Arrays.stream(result).collect(Collectors.joining(" "));
         return resultString;
     }
 

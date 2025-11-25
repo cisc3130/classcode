@@ -7,7 +7,7 @@ public class HashTable<E> {
     final E DELETED;
 
     public HashTable() {
-        this(11, 0.75f);
+        this(16, 0.75f);
     }
 
     public HashTable(int initialCapacity) {
