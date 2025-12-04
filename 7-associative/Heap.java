@@ -43,47 +43,46 @@ public class Heap<E extends Comparable<E>> {
         data.remove(data.size()-1);
 
         heapifyDown(0);
+
+        return firstElt;
     }
 
     // fix a heap that is correct except for the last element
     protected void heapifyUp() {
-        E newElt = data.get(data.size()-1);
-        int idx = data.size()-1, pidx = parentIdx(idx);
-        while (pidx >= 0 && data.get(pidx).compareTo(newElt) < 0) {        // loop while the parent is smaller than the child
-            data.set(idx, data.get(pidx));
-            idx = pidx;
-            pidx = parentIdx(idx);
+        int idx = data.size()-1;
+        E newElt = data.get(idx);     // this is the new element that was just added to the end of the array list
+        // we loop as long as idx is greater than 0 (the root doesn't have any parent)
+        // or as long as its parent is smaller than it
+        while (idx > 0 && data.get(parentIdx(idx)).compareTo(newElt) < 1) {
+            data.set(idx, data.get(parentIdx(idx)));    // copy the smaller parent down
+            idx = parentIdx(idx);                       // advance the iteration by moving idx up to the parent idx
         }
-        data.set(idx, newElt);
+        data.set(idx, newElt);      // idx is now either 0 (root) or at a location where the parent is larger than newElt
     }
 
     // fix a heap that is correct except for given index
     protected void heapifyDown(int i) {
-        E newElt = data.get(i);
-        int idx = i, lidx = leftChildIdx(i), ridx = rightChildIdx(i);
-        boolean hasBadLeftChild = (lidx < data.size()) && (data.get(lidx).compareTo(newElt) > 0),
-            hasBadRightChild = (ridx < data.size()) && (data.get(ridx).compareTo(newElt) > 0);
-        while (hasBadLeftChild || hasBadRightChild) {
-            if (!hasBadRightChild) {
-                data.set(idx, data.get(lidx));
-                idx = lidx;
-            } else if (!hasBadLeftChild) {
-                data.set(idx, data.get(ridx));
-                idx = ridx;
-            } else {
-                if (data.get(lidx).compareTo(data.get(ridx)) > 0) {
-                    data.set(idx, data.get(lidx);
-                    idx = lidx;
-                } else {
-                    data.set(idx, data.get(ridx);
-                    idx = ridx;
-                }
-            }
-            lidx = leftChildIdx(idx); ridx = rightChildIdx(idx);
-            hasBadLeftChild = (lidx < data.size()) && (data.get(lidx).compareTo(newElt) > 0),
-            hasBadRightChild = (ridx < data.size()) && (data.get(ridx).compareTo(newElt) > 0);
-        }
-        data.set(idx, newElt);
+       if (i < 0 || i >= data.size()) throw new IndexOutOfBoundsException();
+       int lidx = leftChildIdx(i), ridx = rightChildIdx(i);
+       E newElt = data.get(i);
+       boolean hasGreaterLeftChild = (lidx < data.size()) && (data.get(lidx).compareTo(newElt) > 0),
+                hasGreaterRightChild = (ridx < data.size()) && (data.get(ridx).compareTo(newElt) > 0);
+       if (!(hasGreaterLeftChild || hasGreaterRightChild)) {
+            return;     // heap property is satisfied
+       }
+       // find which child is greater
+       int toIdx;
+       if (ridx < data.size() && data.get(ridx).compareTo(data.get(lidx)) > 0) {    // right child exists and is greater
+            toIdx = ridx;
+       } else {     // right child doesn't exist or left child is larger
+            toIdx = lidx;
+       }
+       // swap the new element into toIdx
+       data.set(i, data.get(toIdx));
+       data.set(toIdx, newElt);
+
+       // recurse on the new subtree where newElt was moved
+       heapifyDown(toIdx);
     }
 
     // assume data contains elements in arbitrary order, make it into a heap
