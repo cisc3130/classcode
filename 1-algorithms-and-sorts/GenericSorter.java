@@ -25,6 +25,10 @@ public class GenericSorter<E extends Comparable<E>> {
         System.out.println("}");
     }
 
+    public static <F> F sum(F a, F b) {
+        return a + b;
+    }
+
 
     public void insertionSort(E[] arr) {
         for (int i = 1; i < arr.length; i++) {
@@ -37,6 +41,21 @@ public class GenericSorter<E extends Comparable<E>> {
         }
     }
 
+    public void selectionSort(E[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            E minElt = arr[i];
+            int minIdx = i;
+            for (int j = i+1; j < arr.length; j++) {
+                if (arr[j].compareTo(minElt) < 0) {
+                    minElt = arr[j];
+                    minIdx = j;
+                }
+            }
+            arr[minIdx] = arr[i];
+            arr[i] = minElt;
+        }
+    }
+
 
     public static void main(String[] args) {
         String[] arr = { "hello", "goodbye", "cookie", "desk", "abc", "computer" };
@@ -46,15 +65,19 @@ public class GenericSorter<E extends Comparable<E>> {
         sorter.insertionSort(arr);
         printArr(arr);
 
-        // Integer[] intarr = { 3, 4, 2, 6, 8, 5, 3 };
-        // GenericSorter<Integer> intSorter = new GenericSorter<>();
-        // printArr(intarr);
+        Integer[] intarr = { 3, 4, 2, 6, 8, 5, 3 };
+        GenericSorter<Integer> intSorter = new GenericSorter<>();
+        intSorter.insertionSort(intarr);
+        intSorter.insertionSort(arr);
+        printArr(intarr);
 
-        // Desk[] deskarr = { new Desk(), new Desk() };
-        // printArr(deskarr);
-        // GenericSorter<Desk> deskSorter = new GenericSorter<>();
+        Desk[] deskarr = { new Desk(), new Desk() };
+        printArr(deskarr);
+        GenericSorter<Desk> deskSorter = new GenericSorter<Desk>();
 
-        // GenericSorter<char> basicSorter = new GenericSorter<>();
+        GenericSorter rawSorter = new GenericSorter();
 
+        GenericSorter<char> basicSorter = new GenericSorter<>();
+        GenericSorter<Character> charSorter = new GenericSorter<>();
     }
 }

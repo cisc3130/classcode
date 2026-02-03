@@ -2,7 +2,6 @@ import java.util.*;
 
 public class IntSorter {
 
-    /*********** Start of pre-written code ***********/
 
     public static int[] generateIntArray(int n) {
         // ints should be between 1 and 100
@@ -25,6 +24,18 @@ public class IntSorter {
     public static void printArr(int[] arr) {
         for (int i = 0; i < arr.length; i++) {
             System.out.print(arr[i] + " ");
+        }
+    }
+
+    public static void printStringArr(String[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+    }
+
+    public static void printFloatArr(float[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println(arr[i] + " ");
         }
     }
 
