@@ -1,66 +1,112 @@
 public class MLinkedList<E> {
 
-    class Node {
-        E elt;
+    protected class Node {
+        E item;
         Node next;
-        Node(E elt) {
-            this.elt = elt;
+        Node(E item) {
+            this.item = item;
         }
     }
 
     Node head;
     int size;
 
-    public MLinkedList() {
-        head = null;
-        size = 0;
+    public boolean isEmpty() {
+        return head == null;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    protected void addFirst(E elt) {
+        // 1. allocate memory
+        Node nnd = new Node(elt);
+        // 2. links
+        nnd.next = head;
+        head = nnd;
+        // 3. size
+        size++;
+        // 4. check edge cases
     }
 
     public boolean add(E elt) {
-        // special case: what if the list is empty
         if (head == null) {
-            head = new Node(elt);
-            size++;
+            addFirst(elt);
             return true;
         }
-
-        // get to the end of the list
+        // 1. allocate memory
+        Node nnd = new Node(elt);
+        // use a tracker node to find the end of the list
         Node tnd = head;
         while (tnd.next != null) {
             tnd = tnd.next;
         }
-        // tnd.next is null := tnd is the last nd := this is the node we need to insert after
-        // allocate memory
-        Node nnd = new Node(elt);
-        // link it up
+        // when we exit the loop, tnd.next equals null
+        // 2. links
         tnd.next = nnd;
-        // increment size
+        // 3. size
         size++;
+        // 4. check edge cases
         return true;
     }
 
-    public E remove(int idx) {
-        if (idx < 0 || idx >= size) throw new IndexOutOfBoundsException();
-        // special case: idx == 0
+    public void add(int idx, E elt) {
+        if (idx < 0 || idx > size) throw new IndexOutOfBoundsException();
+
         if (idx == 0) {
-            E toReturn = head.elt;
-            head = head.next;
-            size--;
-            return toReturn;
+            addFirst(elt);
+            return;
         }
-        // move to the element before the one we want to remove
+
+        // 1. allocate memory
+        Node nnd = new Node(elt);
+        // use a tracker node to find index idx
         Node tnd = head;
         for (int i = 0; i < idx-1; i++) {
             tnd = tnd.next;
         }
-        // tnd is now pointing to the node at index idx-1
-        // save the value to return
-        E toReturn = tnd.next.elt;
-        tnd.next = tnd.next.next;   // link tnd to the node after the one after it
+        // tnd now points to the element before the target index
+        // we will insert nnd after tnd
+        // 2. links
+        nnd.next = tnd.next;
+        tnd.next = nnd;
+
+        // 3. size
+        size++;
+
+        // 4. check edge cases
+        
+
+    }
+
+    public E remove(int idx) {
+        if (idx < 0 || idx >= size) throw new IndexOutOfBoundsException();
+
+        if (idx == 0) {
+            head = head.next;
+        } 
+        else {
+            // use tracker node to get to idx-1
+            Node tnd = head;
+            for (int i = 0; i < idx-1; i++) {
+                tnd = tnd.next;
+            }
+            // tnd now points to the node before idx
+
+            // links
+            tnd.next = tnd.next.next;
+        }
+        
+        // size
         size--;
 
-        return toReturn;
+        // edge cases
+
     }
+
+
+    
 
 
     public static void main(String[] args) {
@@ -68,8 +114,9 @@ public class MLinkedList<E> {
         lst.add("hello");
         lst.add("goodbye");
         lst.add("desk");
-        lst.add("computer");
-        lst.remove(2);
+        lst.addFirst("computer");
+        lst.add(2, "chair");
+        // lst.remove(2);
     }
    
 }
