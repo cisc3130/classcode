@@ -17,46 +17,65 @@ public class DoublyLinkedList<E> {
     }
 
     public boolean add(E elt) {
+        // 1. allocate memory
         Node nnd = new Node(elt);
-        nnd.prev = tail;
+
+        if (head == null) {         // special case: if list is empty
+            head = nnd;
+        } else {        // 2. links
+            tail.next = nnd;
+            nnd.prev = tail;
+        }
+
         tail = nnd;
 
-        // special case: list is empty
-        if (head == null) {
-            head = nnd;
-        } else {
-            nnd.prev.next = nnd;
-        }
-        
+        // 3. increment size
         size++;
+
+        // 4. check edge cases
+
         return true;
     }
 
 
     public void add(int idx, E elt) {
         if (idx < 0 || idx > size) throw new IndexOutOfBoundsException();
-        // special case: inserting at the end of the list
-        if (idx == size) {
-            add(elt);
-            return;
-        }
 
+        // 1. allocate memory
+        Node nnd = new Node(elt);
+        // use a tracker node to find index idx
         Node tnd = head;
-        for (int i = 0; i < idx; i++) {
+        for (int i = 0; i < idx-1; i++) {
             tnd = tnd.next;
         }
-        // tnd is now pointing to the node at index idx
-        Node nnd = new Node(elt);
-        nnd.prev = tnd.prev;
-        if (nnd.prev != null) {
-            nnd.prev.next = nnd;
-        } else {
-            head = nnd;
-        }
-        nnd.next = tnd;
-        nnd.next.prev = nnd;
+        // tnd now points to the element before the target index
+        // we will insert nnd after tnd
 
+        // tnd <-> tnd.next
+        // after insertion:
+        // tnd <-> nnd <-> tnd.next
+
+        if (idx == 0) {         // edge case: inserting at the beginning
+            nnd.next = head;
+            if (head != null) {         // edge case: make sure the list is not empty
+                head.prev = nnd;
+            }
+            head = nnd;
+        } else {
+            nnd.next = tnd.next;
+            if (tnd.next != null) {
+                tnd.next.prev = nnd;
+            } else {                    // edge case: inserting at the end
+                tail = nnd;
+            }
+            tnd.next = nnd;
+            nnd.prev = tnd;
+        }
+
+        // 3. size
         size++;
+
+        // 4. check edge cases
     }
 
     public E remove(int idx) {
@@ -66,14 +85,17 @@ public class DoublyLinkedList<E> {
             tnd = tnd.next;
         }
         // tnd now holds the address of the node we want to remove (the node at idx)
+        // tnd.prev <-> tnd <-> tnd.next
+        // after removal:
+        // tnd.prev <-> tnd.next
         if (tnd.prev != null) {
-            tnd.prev.next = tnd.next;       // link the node before tnd to the one after tnd
-        } else {
+            tnd.prev.next = tnd.next;
+        } else {            // edge case: tnd is first node
             head = tnd.next;
         }
         if (tnd.next != null) {
-            tnd.next.prev = tnd.prev;       // complete the link in the other direction
-        } else {
+            tnd.next.prev = tnd.prev;
+        } else {            // edge case: tnd is last node
             tail = tnd.prev;
         }
 
@@ -106,7 +128,7 @@ public class DoublyLinkedList<E> {
     public int size() { return size; }
 
     public static void main(String[] args) {
-        List<String> lst = new LinkedList<>();
+        DoublyLinkedList<String> lst = new DoublyLinkedList<>();
         lst.add("hello");
         lst.add("goodbye");
         lst.add(0, "coffee");
@@ -133,6 +155,7 @@ public class DoublyLinkedList<E> {
             }
         }
         // ^ This takes linear time
+
 
 
 

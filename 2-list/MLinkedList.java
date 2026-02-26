@@ -83,8 +83,12 @@ public class MLinkedList<E> {
     public E remove(int idx) {
         if (idx < 0 || idx >= size) throw new IndexOutOfBoundsException();
 
+        E toReturn;
+
         if (idx == 0) {
+            toReturn = head.item;
             head = head.next;
+            return toReturn;
         } 
         else {
             // use tracker node to get to idx-1
@@ -93,6 +97,7 @@ public class MLinkedList<E> {
                 tnd = tnd.next;
             }
             // tnd now points to the node before idx
+            toReturn = tnd.next.item;
 
             // links
             tnd.next = tnd.next.next;
@@ -102,6 +107,8 @@ public class MLinkedList<E> {
         size--;
 
         // edge cases
+
+        return toReturn;
 
     }
 

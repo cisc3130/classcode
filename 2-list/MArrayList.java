@@ -50,7 +50,7 @@ public class MArrayList<E> extends AbstractList<E> {
 
     public E get(int idx) {
         if (idx < 0 || idx >= size) throw new IndexOutOfBoundsException();
-        return data[idx];
+        return data[idx];           // this takes constant time! ***Random Access***
     }
 
     public E set(int idx, E elt) {

@@ -10,8 +10,8 @@ public class SentinelLinkedList<E> {
 
     public SentinelLinkedList() {
         sentinel = new Node(null);
-        sentinel.next = sentinel;
-        sentinel.prev = sentinel;
+        sentinel.next = sentinel;               // sentinel.next points to the first node (or sentinel if the list is empty)
+        sentinel.prev = sentinel;               // sentinel.prev points to the last node (or sentinel if the list is empty)
     }
 
     public boolean isEmpty() { return sentinel.next == sentinel; }
@@ -22,10 +22,18 @@ public class SentinelLinkedList<E> {
 
         // link nnd into the correct location
         // sentinel.prev points to the last node
+        // ....... sentinel.prev <-> sentinel
+        // after addition at the end of the list:
+        // ....... sentinel.prev <-> nnd <-> sentinel
         sentinel.prev.next = nnd;
         nnd.prev = sentinel.prev;
         sentinel.prev = nnd;
         nnd.next = sentinel;
+
+        // what if list is empty?
+        // sentinel <-> sentinel
+        // after insertion at the end of the list:
+        // sentinel <-> nnd <-> sentinel
 
         size++;
         return true;
@@ -55,7 +63,7 @@ public class SentinelLinkedList<E> {
         // tnd is now pointing to the node at index idx
         Node nnd = new Node(elt);
         nnd.prev = tnd.prev;
-                nnd.prev.next = nnd;
+        nnd.prev.next = nnd;
         nnd.next = tnd;
         nnd.next.prev = nnd;
 

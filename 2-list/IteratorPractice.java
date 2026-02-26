@@ -28,6 +28,14 @@ public class IteratorPractice {
         }
    }
 
+   public <E> void clearReverse(List<E> lst) {
+        ListIterator<E> lit = lst.listIterator(lst.size());
+        while (lit.hasPrevious()) {
+            lit.previous();
+            lit.remove();
+        }
+   }
+
 
    public boolean checkPalindrome(List<Character> clist) {
         ListIterator<Character> fit, bit;
@@ -44,68 +52,67 @@ public class IteratorPractice {
 
 
    public Integer accumulate (List<Integer> intList) {
-        ListIterator<Integer> lit = intList.listIterator();
-        int sum = 0;
-        while (lit.hasNext()) {
-            sum += lit.next();
-            lit.set(sum);
+        ListIterator<Integer> it = intList.listIterator();
+        int total = 0;
+        while (it.hasNext()) {
+            total += it.next();
+            it.set(total);
         }
+        return total;
    }
+
+   // a = { 1,2 3,4 5,6 7 8 10 12 14^ }
+   // b = { 2, 4, 6, 8,10, 12,14 ^  }
+   // after interleave: 
+   // a = { 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14 }
 
    public <E> void interleave(List<E> a, List<E> b) {
-        ListIterator<E> ait, bit;
-        ait = a.listIterator();
-        bit = b.listIterator();
-        while (ait.hasNext() && bit.hasNext()) {
-            ait.next();
-            ait.add(bit.next());
-        }
+        ListIterator<E> ait = a.listIterator(), bit = b.listIterator();
         while (bit.hasNext()) {
+            if (ait.hasNext()) {
+                ait.next();
+            }
             ait.add(bit.next());
         }
    }
 
 
-
+   // ^ 56 78 2 4 757 2 4 5 
     public <E extends Comparable<E>> void bubbleSort(List<E> lst) {
-        if (lst.size() < 2) return;
+        boolean swapped;
         for (int i = 0; i < lst.size(); i++) {
-            boolean swapped = false;
-            ListIterator<E> lit1 = lst.listIterator(), lit2 = lst.listIterator(1);
-            while (lit2.hasNext()) {
-                E val1 = lit1.next(), val2 = lit2.next();
-                if (val1.compareTo(val2) > 0) {
+            swapped = false;
+            ListIterator<E> lit = lst.listIterator();
+            for (int k = 0; k < lst.size()-i-1; k++) {
+                E leftVal = lit.next();
+                E rightVal = lit.next();
+                if (leftVal.compareTo(rightVal) > 0) {    // if the two elements are out of order
+                    lit.previous();
+                    lit.set(leftVal);
+                    lit.previous();
+                    lit.set(rightVal);
                     swapped = true;
-                    lit1.set(val2);
-                    lit2.set(val1);
+                    lit.next();
                 }
             }
-            if (!swapped) return;
+            if (!swapped) break;
         }
     }
 
 
-
-
-    public <E> void interleave(List<E> lst1, List<E> lst2) {
-       ListIterator<E> lit1 = lst1.listIterator(),
-                        lit2 = lst2.listIterator();
-       while(lit1.hasNext() && lit2.hasNext()) {
-            lit1.next();
-            lit1.add(lit2.next());
-            lit1.next();
-       }
-       while(lit2.hasNext()) {
-            lit1.add(lit2.next());
-            lit1.next();
-       }
-    }
 
    
 
 
     public <E> void removeEveryOther(Collection<E> c) {
         Iterator<E> it = c.iterator();
+        while (it.hasNext()) {
+            it.next();
+            if (it.hasNext()) {
+                it.next();
+                it.remove();
+            }
+        }
     }
 
 
@@ -120,15 +127,6 @@ public class IteratorPractice {
         return sum < 0;
     }
 
-    public int accumulate(List<Integer> lst) {
-        ListIterator<Integer> lit = lst.listIterator();
-        int sum = 0;
-        while (lit.hasNext()) {
-            sum += lit.next();
-            lit.set(sum);
-        }
-        return sum;
-    }
 
     public int accumulateWithoutVars(List<Integer> lst) {
         ListIterator<Integer> it1 = lst.listIterator(), it2 = lst.listIterator(1);
