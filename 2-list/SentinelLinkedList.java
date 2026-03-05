@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class SentinelLinkedList<E> {
     class Node {
         E data;
@@ -68,5 +70,21 @@ public class SentinelLinkedList<E> {
         nnd.next.prev = nnd;
 
         size++;
+    }
+
+    public ListIterator<E> listIterator() {
+        LinkedListIterator<E> lit = new LinkedListIterator<>(this, sentinel);
+        return lit;
+    }
+
+    public ListIterator<E> listIterator(int idx) {
+        if (idx < 0 || idx >= size) throw new IndexOutOfBoundsException();
+        Node tnd = sentinel;
+        for (int i = 0; i < idx; i++) {
+            tnd = tnd.next;
+        }
+        // tnd is now pointing to the node at idx
+        LinkedListIterator<E> lit = new LinkedListIterator<>(this, tnd);
+        return lit;
     }
 }
