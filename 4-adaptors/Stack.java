@@ -1,4 +1,3 @@
-import java.sql.Array;
 import java.util.*;
 
 
@@ -29,29 +28,53 @@ public class Stack<E> {
         return data.get(data.size()-1);
     }
 
-
-    public static <E> void removeEveryOtherElement(Stack<E> s) {
-        Deque<E> aux = new LinkedList<>();
-        while (!s.isEmpty()) {
-            aux.push(s.pop());
-            if (!s.isEmpty()) s.pop();
+    public E findElementInStack(E target) {
+        Deque<E> aux = new ArrayDeque<>();
+        E found = null;
+        while (!this.isEmpty()) {
+            E elt = this.pop();
+            if (!elt.equals(target)) {
+                aux.addFirst(elt);
+            } else {
+                found = elt;
+                break;
+            }
         }
+        // either the stack is empty or the target was found
         while (!aux.isEmpty()) {
-            s.push(aux.pop());
+            this.push(aux.removeFirst());
+        }
+        return found;
+    }
+
+
+    public static <E> void removeEveryOtherElement(Deque<E> s) {
+        Deque<E> aux = new LinkedList<>();
+        int i = 0;
+        while (!s.isEmpty()) {              // save every other element on the aux stack
+            E elt = s.removeFirst();
+            if (i++ % 2 == 0) {
+                aux.addFirst(elt);
+            }
+        }
+        while (!aux.isEmpty()) {            // cleanup loop restoring the stack
+            s.addFirst(aux.removeFirst());
         }
     }
 
-    public static <E> void moveToTop(Stack<E> s, int p) {       // 1-based indexing
+    public static <E> void moveToTop(Deque<E> s, int p) {       // 1-based indexing
         Deque<E> aux = new ArrayDeque<>();
         for (int i = 0; i < p-1; i++) {
-            aux.push(s.pop());
+            aux.addFirst(s.removeFirst());
         }
-        E x = s.pop();
+        // element p is now at the top of the stack
+        E pth = s.removeFirst();
+        // empty aux back into the original stack
         while (!aux.isEmpty()) {
-            s.push(aux.pop());
+            s.addFirst(aux.removeFirst());
         }
-        s.push(x);
-    }
+        s.addFirst(pth);
+    } 
 
     public static <E> boolean balancedParens(String str) {
         // iterate over the string. for each char:
@@ -75,7 +98,7 @@ public class Stack<E> {
                 if (rightBracketIndex != leftBracketIndex) return false;    // this right bracket doesn't match the most recent unmatched left bracket
                 leftBracketStack.removeFirst();
             }
-        }
+        }       
 
         if (!leftBracketStack.isEmpty()) // there are still left brackets that were never matched
             return false;
@@ -83,11 +106,11 @@ public class Stack<E> {
         
         return true;
     }
-
     
 
+
     public static void undoRedo() {
-        Stack<String> state = new Stack<>(), redo = new Stack<>();
+        Deque<String> state = new ArrayDeque<>(), redo = new ArrayDeque<>();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter one or more characters to add to the string, or enter 'undo', 'redo', or 'quit'");
         String input = scanner.nextLine();
@@ -95,39 +118,46 @@ public class Stack<E> {
             if (input.strip().equals("undo")) {
                 if (state.isEmpty()) System.out.println("Nothing to undo.");
                 else {
-                    redo.push(state.pop());
-                    System.out.println("Current string: " + state.peek());
+                    redo.addFirst(state.removeFirst());
+                    System.out.println("Current string: " + state.getFirst());
                 }
             } else if (input.equals("redo")) {
                 if (redo.isEmpty()) System.out.println("Nothing to redo.");
                 else {
-                    state.push(redo.pop());
-                    System.out.println("Current string: " + state.peek());
+                    state.addFirst(redo.removeFirst());
+                    System.out.println("Current string: " + state.getFirst());
                 }
             } else {
                 if (state.isEmpty()) {
-                    state.push(input);
+                    state.addFirst(input);
                 }
-                else { state.push(state.peek() + input); }
-                System.out.println("Current string: " + state.peek());
+                else { state.addFirst(state.getFirst() + input); }
+                System.out.println("Current string: " + state.getFirst());
             }
 
             System.out.println("Enter one or more characters to add to the string, or enter 'undo', 'redo', or 'quit'");
             input = scanner.nextLine();
         }
+        scanner.close();
     }
 
     public static void main(String[] args) {
-        Stack<Character> s = new Stack<>();
-        s.push('H');
-        s.push('E');
-        s.pop();
-        s.push('L');
-        s.push('S');
-        s.pop();
-        s.pop();
-        System.out.println(s.peek());
-        moveToTop(s, 2);
+        // Stack<Character> s = new Stack<>();
+        // s.push('H');
+        // s.push('E');
+        // s.pop();
+        // s.push('L');
+        // s.push('S');
+        // for (char c : "abcdefghijklmnopqrst".toCharArray()) {
+        //     s.push(c);
+        // }
+        // // s.pop();
+        // // s.pop();
+
+        // s.findElementInStack('l');
+
+        // System.out.println(s.peek());
+        // // moveToTop(s, 2);
 
         // String ex1 = "<([{}()])>",
         //     ex2 = "<({]})>",
@@ -138,6 +168,6 @@ public class Stack<E> {
         // System.out.println(balancedParens(ex3));
         // System.out.println(balancedParens(ex4));
 
-        // undoRedo();
+        undoRedo();
     }
 }
