@@ -7,6 +7,17 @@ public class MergeSortInt {
         // base case
         if (end - begin <= 1) return;     // an array of size 1 or 0 is trivially sorted
 
+        // base case to shorten tracing:
+        // if there are two elements, just swap them if they're out of order
+        if (end - begin == 2) {
+            if (arr[begin] > arr[begin+1]) {
+                int tmp = arr[begin];
+                arr[begin] = arr[begin+1];
+                arr[begin+1] = tmp;
+            }
+            return;
+        }
+
         // find the middle
         int middle = begin + (end - begin)/2;
 
@@ -28,7 +39,7 @@ public class MergeSortInt {
             // compare scratch[nextFirst] to arr[nextSecond]
             // write whichever is smaller into arr[nextWrite]
             // advance whichever pointer was smaller
-            arr[nextWrite++] = scratch[nextFirst] < arr[nextSecond] ? scratch[nextFirst++] : arr[nextSecond++];
+            arr[nextWrite++] = scratch[nextFirst] <= arr[nextSecond] ? scratch[nextFirst++] : arr[nextSecond++];
         }
         while (nextFirst < (middle - begin)) {
             arr[nextWrite++] = scratch[nextFirst++];

@@ -45,7 +45,7 @@ public class LogSorts {
 
     public static <E extends Comparable<E>> void mergeSort(E[] arr, int begin, int end) {
         // base case: only 1 or 0 elements: subarray is trivially sorted
-        if (begin - end <= 1) {
+        if (end - begin <= 1) {
             return;     
         }
 

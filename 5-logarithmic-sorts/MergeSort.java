@@ -1,4 +1,19 @@
-public class MergeSortI {
+/*
+3 2 7 9 0 1 6 5 ->  0 1 2 3 5 6 7 9
+3 2 7 9   -> 2 3 7 9 ✓                                 0 1 6 5 -> 0 1 5 6 ✓
+3 2 -> 2 3  ✓          7 9 -> 7 9 ✓           0 1 -> 0 1 ✓       6 5 -> 5 6 ✓
+3 ✓    2 ✓           7 ✓    9 ✓             0 ✓ 1 ✓           6 ✓ 5 ✓
+
+2 3 7 9
+    ^
+0 1 5 6
+        ^ 
+0 1 2 3 5 6 7 9
+
+*/
+
+
+public class MergeSort {
     public void mergeSort(int[] arr) {
         mergeSort(arr, 0, arr.length);
     }
