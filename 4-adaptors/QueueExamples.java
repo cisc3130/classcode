@@ -2,21 +2,21 @@ import java.util.*;
 
 public class QueueExamples {
 
+    // RADAR
+    // s: D A R
+    // q: D A R
     public static boolean checkPalindrome(String str) {
         Stack<Character> s = new Stack<>();
-        Queue<Character> q = new ArrayDeque<>();
-
+        Queue<Character> q = new LinkedList<>();
         for (char c : str.toCharArray()) {
             s.push(c);
-            q.offer(c);
+            q.add(c);
         }
-
         while (!s.isEmpty()) {
-            if (!s.pop().equals(q.poll())) {
+            if (!s.pop().equals(q.remove())) {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -57,19 +57,21 @@ public class QueueExamples {
     // queue move target to front
     public <E> void moveTargetToFront(Queue<E> q, E target) {
         Queue<E> aux = new LinkedList<>();
+        E found = null;
         while (!q.isEmpty()) {
-            E x = q.poll();
-            if (!x.equals(target)) {
-                aux.offer(x);
+            E elt = q.remove();
+            if (!elt.equals(target)) {
+                aux.add(elt);
+            } else {
+                found = elt;
             }
-            while (!q.isEmpty()) {
-                aux.add(q.remove());
-            }
-            q.add(target);
-
-            while (!aux.isEmpty()) {
-                q.add(aux.remove());
-            }
+        }
+        // the queue is now empty
+        if (found != null) {
+            q.add(found);   // add the target to the front of the queue
+        }
+        while (!aux.isEmpty()) {
+            q.add(aux.remove());
         }
     }
 
@@ -91,21 +93,36 @@ public class QueueExamples {
     }
 
     // reverse the first half of the queue
+    // 1 2 3 4 5 6
+    // 3 2 1 4 5 6
+
+    // q:    3 2 1 4 5 6          
+    // aux stack:    
+    // aux queue:     
     public static <E> void reverseFirstHalfOfQueue(Queue<E> q) {
-        int half = q.size()/2;
-        Stack<E> s = new Stack<>();
-        for (int i = 0; i < half; i++) {
-            s.push(q.poll());
+        Stack<E> auxStack = new Stack<>();
+        Queue<E> auxQueue = new LinkedList<>();
+
+        // empty the first half of the queue onto the aux stack
+        int n = q.size();
+        for (int i = 0; i < n/2; i++) {
+            auxStack.push(q.remove());
         }
-        Queue<E> aq = new ArrayDeque<>();       // empty the second half into an auxiliary queue
-        while (!q.isEmpty()) {                  // so we can put the first half back into an empty queue
-            aq.offer(q.poll());                 // so it can still be first
+
+        // empty the second half onto the aux queue
+        while (!q.isEmpty()) {
+            auxQueue.add(q.remove());
         }
-        while (!s.isEmpty()) {      // now that the queue is empty put first half back in reverse order
-            q.offer(s.pop());
+
+        // now that the queue is empty, empty the auxStack back into the queue
+        // so the first half will go back in the front
+        while (!auxStack.isEmpty()) {
+            q.add(auxStack.pop());
         }
-        while (!aq.isEmpty()) {     // and then put back second half
-            q.offer(aq.poll());
+
+        // now put the second half back so it will go behind the first half
+        while (!auxQueue.isEmpty()) {
+            q.add(auxQueue.remove());
         }
     }
 
