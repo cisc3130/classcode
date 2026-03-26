@@ -1,0 +1,5 @@
+
+
+1 + 2 + 4 + 8 + 16 + .... = n
+
+minimum number of levels = log2(n)

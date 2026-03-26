@@ -9,11 +9,12 @@ public class RadixSort {
 
     public RadixSort(List<Integer> toSort, int numDigits) {
         this.toSort = toSort;
+        this.numDigits = numDigits;
+
         bins = new ArrayList<>(BASE);
         for (int i = 0; i < BASE; i++) {
-            bins.add(new LinkedList<>());
+            bins.add(new LinkedList<Integer>());
         }
-        this.numDigits = numDigits;
     }
 
     public void distribute(int d) {
@@ -36,9 +37,10 @@ public class RadixSort {
 
     public void collect() {
         toSort.clear();
-        for (Queue<Integer> b : bins) {
-            while (!b.isEmpty()) {
-                toSort.add(b.poll());
+        for (int i = 0; i < BASE; i++) {
+            Queue<Integer> bin = bins.get(i);
+            while (!bin.isEmpty()) {
+                toSort.add(bin.remove());
             }
         }
     }
@@ -55,9 +57,8 @@ public class RadixSort {
     public void printBins() {
         for (int i = 0; i < BASE; i++) {
             System.out.print(i + ": ");
-            Queue<Integer> b = bins.get(i);
-            for (Integer val : b) {
-                System.out.print(val + " ");
+            for (Integer ii : bins.get(i)) {
+                System.out.print(ii + " ");
             }
             System.out.println();
         }
