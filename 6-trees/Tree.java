@@ -13,6 +13,9 @@ public class Tree<E> {
             children.add(nd); 
             nd.parent = this;
         }
+        public boolean isLeaf() {
+            return children.isEmpty();
+        }
     }
 
     TreeNode root;
@@ -56,29 +59,37 @@ public class Tree<E> {
 
     public void printTree() {
         if (root == null) return;
-        Deque<TreeNode> unvisited = new ArrayDeque<>();     // create a data structure to hold all the addresses we see
-        unvisited.offer(root);           // start it off with the root
+        Stack<TreeNode> unvisited = new Stack<>();     // create a data structure to hold all the addresses we see
+        unvisited.push(root);           // start it off with the root
         while (!unvisited.isEmpty()) {
-            TreeNode toVisit = unvisited.poll();
+            TreeNode toVisit = unvisited.pop();
             System.out.print(toVisit.data + " ");   // visit the node
             // add the node's children to unvisited
             for (TreeNode c : toVisit.children) {
-                unvisited.offer(c);
+                unvisited.push(c);
             }
         }
     }
 
+    /*
+        unvisited front|     |back             toVisit: Cow
+        output: Food Animal Plant Bird Fish Mammal Roots Leaves Fruit Chicken Cow
+
+        unvisited top|              toVisit: Roots
+        output: Food Animal Bird Chicken Fish Mammal Cow Plant Roots Leaves Fruit
+    */
+
     public boolean contains(E elt) {
         if (root == null) return false;
-        Deque<TreeNode> unvisited = new ArrayDeque<>();
-        unvisited.offer(root);
+        Stack<TreeNode> unvisited = new Stack<>();
+        unvisited.push(root);
         while (!unvisited.isEmpty()) {
-            TreeNode toVisit = unvisited.poll();
-            if (toVisit.data.equals(elt)) {
+            TreeNode toVisit = unvisited.pop();
+            if (toVisit.data.equals(elt))    {       // visit
                 return true;
             }
             for (TreeNode c : toVisit.children) {
-                unvisited.offer(c);
+                unvisited.push(c);
             }
         }
         return false;
@@ -87,17 +98,16 @@ public class Tree<E> {
     public void findReplace(E findVal, E replaceVal) {
         if (root == null) return;
         Deque<TreeNode> unvisited = new ArrayDeque<>();
-        unvisited.offer(root);
+        unvisited.add(root);
         while (!unvisited.isEmpty()) {
-            TreeNode toVisit = unvisited.poll();
-            if (toVisit.data.equals(findVal)) {
+            TreeNode toVisit = unvisited.remove();
+            if (toVisit.data.equals(findVal)) {     // visit
                 toVisit.data = replaceVal;
             }
             for (TreeNode c : toVisit.children) {
-                unvisited.offer(c);
+                unvisited.add(c);
             }
         }
-        return;
     }
 
   
@@ -131,16 +141,15 @@ public class Tree<E> {
     }
 
     public int size() {
-        if (root == null) return 0;     // tree is empty, size is 0
-        Stack<TreeNode> unvisited = new Stack<>();
-        unvisited.push(root);
+        if (root == null) return 0;
+        Deque<TreeNode> unvisited = new LinkedList<>();
         int count = 0;
+        unvisited.add(root);
         while (!unvisited.isEmpty()) {
-            TreeNode nd = unvisited.pop();
-            // ***visit***
-            count++;
-            for (TreeNode c : nd.children) {
-                unvisited.push(c);
+            TreeNode toVisit = unvisited.remove();
+            count++;            // visit
+            for (TreeNode c : toVisit.children) {
+                unvisited.add(c);
             }
         }
         return count;
