@@ -1,0 +1,14 @@
+                                             Food
+                                Plant                                           Animal
+            Roots               Leaves          Fruit               Bird        Mammal  Fish
+Potatoes Carrots Turnips                Apples Bananas Pears     Chicken Duck
+
+
+                                                    Food
+                                        Plant           
+                            Roots               Animal
+                    Potatoes        Leaves      Bird
+                        Carrots         Fruit
+                            Turnips  Apples 
+                                        Bananas 
+                                            Pears
