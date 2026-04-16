@@ -25,28 +25,33 @@ public class BST<E extends Comparable<E>> implements Iterable<E> {
     }
 
     public boolean add(E elt) {
-        if (root == null) {         // tree is empty
+        // if tree is empty
+        if (root == null) {
             Node nnd = new Node(elt);
             root = nnd;
-            size = 1;
+            size++;
             return true;
         }
 
+        // tree is not empty
+        // begin search
         Node tnd = root;
-        while (!tnd.data.equals(elt)) {
-            if (elt.compareTo(tnd.data) < 0) {      // elt is smaller than tnd.data: branch left
-                if (tnd.left == null) {
-                    Node nnd = new Node(elt);
-                    tnd.addLeftChild(nnd);
+        while (true) {
+            int c = elt.compareTo(tnd.data);
+            if (c == 0) {       // the two values are equal
+                return false;
+            } 
+            if (c < 0) {        // the value to be inserted is smaller than the value of the node
+                if (tnd.left ==  null) {
+                    tnd.addLeftChild(new Node(elt));
                     size++;
                     return true;
                 } else {
                     tnd = tnd.left;
                 }
-            } else {        // elt is larger than tnd.data: branch right
+            } else {            // the value to be inserted is larger than the value of the node
                 if (tnd.right == null) {
-                    Node nnd = new Node(elt);
-                    tnd.addRightChild(nnd);
+                    tnd.addRightChild(new Node(elt));
                     size++;
                     return true;
                 } else {
@@ -54,24 +59,19 @@ public class BST<E extends Comparable<E>> implements Iterable<E> {
                 }
             }
         }
-
-        return false;
-
+        
     }
 
     public boolean contains(E elt) {
         Node tnd = root;
-        while (tnd != null) {
-            int c = elt.compareTo(tnd.data);
-            if (c == 0)    {        // current node contains elt
-                return true;
-            } else if (c < 0) {     // elt is smaller than data in current node; branch left
+        while (tnd != null && !tnd.data.equals(elt)) {
+            if (elt.compareTo(tnd.data) < 0) {      // the target element is smaller than the current node's data
                 tnd = tnd.left;
-            } else {                // elt is larger than data in current node; branch right
+            } else {                    // the target element is larger than the current node's data
                 tnd = tnd.right;
             }
         }
-        return false;
+        return tnd != null;             // tnd will be null if elt is not in the tree
     }
 
     public boolean contains(Node nd, E elt) {
@@ -85,56 +85,39 @@ public class BST<E extends Comparable<E>> implements Iterable<E> {
     public boolean remove(E elt) {
         Node tnd = root;
         while (tnd != null && !tnd.data.equals(elt)) {
-            if (elt.compareTo(tnd.data) < 0) {
-                tnd = tnd.left;
-            } else {
-                tnd = tnd.right;
-            }
+            if (elt.compareTo(tnd.data) < 0) tnd = tnd.left;
+            else tnd = tnd.right;
         }
-        if (tnd == null) return false;      // elt is not in the tree
-
+        if (tnd == null) return false;
         Node rnd;
-        if (tnd.left == null && tnd.right == null) {    // case 1: tnd is a leaf
-            rnd = null;
-        } else if (tnd.right == null) {        // case 2: tnd only has a left child
-            rnd = tnd.left;
-        } else if (tnd.left == null) {         // case 3: tnd only has a right child
+        if (tnd.left == null && tnd.right == null) rnd = null;
+        else if (tnd.left == null) {
             rnd = tnd.right;
-        } else {            // case 4: tnd has two children
-            // rnd will be the leftmost child in tnd's right subtree
-            rnd = tnd.right;        // start rnd in tnd's right subtree
-            while (rnd.left != null) {
-                rnd = rnd.left;             // move it as left as possible
-            }
-        }
-
-        size--;
-            
-        if (rnd == null) return true;
-
-        // link up rnd to replace tnd
-        // link rnd as the correct child of tnd.parent
-        if (tnd == tnd.parent.left) {
-            tnd.parent.left = rnd;
+        } else if (tnd.right == null) {
+            rnd = tnd.left;
         } else {
-            tnd.parent.right = rnd;
+            // tnd has two children. find the leftmost element in its right subtree
+            rnd = tnd.right;    // move into the right subtree
+            while (rnd.left != null) rnd = rnd.left;        // move as left as you can in the right subtree
         }
-        // relocate rnd's right child if necessary
-        if (rnd.parent != tnd && rnd.right != null) {
-            rnd.parent.left = rnd.right;
-            rnd.right.parent = rnd.parent;
-        }
-        // if tnd had two children, reassign them as children of rnd
-        if (rnd.parent != tnd) {
-            rnd.left = tnd.left;
-            rnd.left.parent = rnd;
-            rnd.right = tnd.right;
-            rnd.right.parent = rnd;
-        }
-        // link rnd to its parent
-        rnd.parent = tnd.parent;
 
-        return true;
+        // link rnd to tnd's parent
+        if (rnd != null) rnd.parent = tnd.parent;
+        if (tnd.parent != null) {
+            if (tnd.data.compareTo(tnd.parent.data) < 0) {      // tnd is a left child
+                tnd.parent.left = rnd;
+            } else {            // tnd is a right child
+                tnd.parent.right = rnd;
+            }
+        } else {
+            root = rnd;
+        }
+
+        // link rnd to tnd's left child                 // THIS IS WHAT WE ARE UP TO 4/16
+        if (rnd != null && rnd.left == null) {
+            rnd.left = tnd.left;
+            tnd.left.parent = rnd;
+        }
     }
 
 
