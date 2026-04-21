@@ -74,12 +74,18 @@ public class BST<E extends Comparable<E>> implements Iterable<E> {
         return tnd != null;             // tnd will be null if elt is not in the tree
     }
 
-    public boolean contains(Node nd, E elt) {
-        if (nd == null) return false;
+    public boolean contains(Node nd, E elt) {       // return true if elt is in the subtree rooted in nd, otherwise false   
+        if (nd == null) return false;       // base case
+        // return nd.data.equals(elt) || contains(nd.left, elt) || contains(nd.right, elt);
+        // ^ this is the code we wrote for a regular tree, not a binary search tree
+        // it checks every single node in the tree to see if it matches elt: takes O(n)
+        // since a bst keeps its elements in order, we don't need to do this
+        // every node comparison knocks out half the search space
+        // **** we only ever need to recurse on one branch ****: O(log n)
         int c = elt.compareTo(nd.data);
         if (c == 0) return true;
         if (c < 0) return contains(nd.left, elt);
-        return contains(nd.right, elt);
+        else return contains(nd.right, elt);
     }
 
     public boolean remove(E elt) {
@@ -89,35 +95,49 @@ public class BST<E extends Comparable<E>> implements Iterable<E> {
             else tnd = tnd.right;
         }
         if (tnd == null) return false;
-        Node rnd;
-        if (tnd.left == null && tnd.right == null) rnd = null;
-        else if (tnd.left == null) {
+
+        // identify a replacement node
+        Node rnd;       
+        if (tnd.left == null && tnd.right == null) rnd = null;      // case 1: target node is a leaf: replace with null
+        else if (tnd.left == null) {            // case 2 and 3: target node has just one child: replace with that child
             rnd = tnd.right;
         } else if (tnd.right == null) {
             rnd = tnd.left;
-        } else {
-            // tnd has two children. find the leftmost element in its right subtree
+        } else {        //  case 4: tnd has two children. find the leftmost element in its right subtree
             rnd = tnd.right;    // move into the right subtree
             while (rnd.left != null) rnd = rnd.left;        // move as left as you can in the right subtree
         }
 
         // link rnd to tnd's parent
-        if (rnd != null) rnd.parent = tnd.parent;
+        if (rnd != null) {
+            if (tnd.left != null && tnd.right != null && rnd.right != null)  {           // rnd has a right child: must relink it 
+                rnd.parent.left = rnd.right;                                             // before overwriting it and before moving rnd's parent
+                rnd.right.parent = rnd.parent;
+            }
+            rnd.parent = tnd.parent;
+        }
         if (tnd.parent != null) {
             if (tnd.data.compareTo(tnd.parent.data) < 0) {      // tnd is a left child
                 tnd.parent.left = rnd;
             } else {            // tnd is a right child
                 tnd.parent.right = rnd;
             }
-        } else {
+        } else {            // tnd has no parent: it was the root
             root = rnd;
         }
 
-        // link rnd to tnd's left child                 // THIS IS WHAT WE ARE UP TO 4/16
-        if (rnd != null && rnd.left == null) {
-            rnd.left = tnd.left;
+        // case 4. tnd has 2 children that need a replacement parent
+        if (tnd.left != null && tnd.right != null) {
             tnd.left.parent = rnd;
+            rnd.left = tnd.left;                // rnd doesn't have a left child: it's the leftmost descendant
+            if (rnd.parent != tnd) {
+                tnd.right.parent = rnd;
+                rnd.right = tnd.right;              // rnd doesn't have a right child: if it did, we moved it before
+            }
         }
+
+        size--;
+        return true;
     }
 
 
@@ -128,22 +148,22 @@ public class BST<E extends Comparable<E>> implements Iterable<E> {
 
     public String toString() { return toString(root); }
 
-    protected String toString(Node nd) {
+    protected String toString(Node nd) {        // return a string containing the elements of the tree in order
         if (nd == null) return "";
-        StringBuilder sb = new StringBuilder();
-        sb.append(toString(nd.left));
-        sb.append(nd.data.toString());
-        sb.append(toString(nd.right));
-        return sb.toString();
+        String stringOfLeftSubtree = toString(nd.left);         // L
+        String stringOfCurrentNode = nd.data.toString();        // V
+        String stringOfRightSubtree = toString(nd.right);       // R
+        return stringOfLeftSubtree + stringOfCurrentNode + stringOfRightSubtree;
     }
 
     protected boolean isBST(Node nd) {
-        if (nd == null) return true;
-        E maxLeft = max(nd.left), minRight = min(nd.right);
-        if (maxLeft != null && maxLeft.compareTo(nd.data) > 0) return false;
-        if (minRight != null && minRight.compareTo(nd.data) < 0) return false;
+        if (nd == null) return true;                                // empty tree is considered BST
+        if (nd.left == null && nd.right == null) return true;       // leaves are considered BST
+        // L, R, V
         if (!isBST(nd.left)) return false;
         if (!isBST(nd.right)) return false;
+        if (nd.data.compareTo(max(nd.left)) < 0) return false;      // current nd is smaller than the max of its left subtree
+        if (nd.data.compareTo(min(nd.right)) > 0) return false;     // curretn nd is larger than the min of its right subtree
         return true;
     }
 

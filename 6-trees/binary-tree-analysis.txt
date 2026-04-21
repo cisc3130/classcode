@@ -3,3 +3,20 @@
 1 + 2 + 4 + 8 + 16 + .... = n
 
 minimum number of levels = log2(n)
+
+
+
+                10
+        6              *20*             <- tnd. case 4: tnd has 2 children
+    4       9       5      30
+  2   5                 -25-            <- rnd: leftmost child of right subtree
+                            29
+                           27
+
+
+
+                10
+        6              *25*             <- new tree: 25 goes here
+    4       9       16      30
+  2   5                   29            
+                        27
