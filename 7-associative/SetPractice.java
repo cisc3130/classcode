@@ -2,7 +2,7 @@ import java.util.*;
 
 public class SetPractice {
 
-    static Set<String> dictionary = loadDictionary();;
+    static Set<String> dictionary = loadDictionary();
 
     
 
@@ -21,22 +21,17 @@ public class SetPractice {
     }
 
     public static Set<Integer> findPrimes(int ceiling) {
-        Set<Integer> sieve = new HashSet<>();
-        // fill up the set with integers up to ceiling
+        Set<Integer> sieve = new TreeSet<>();
         for (int i = 2; i < ceiling; i++) {
             sieve.add(i);
         }
-
-        // iterate over factors up to sqrt(ceiling) and remove all multiples
         for (int f = 2; f < Math.sqrt(ceiling); f++) {
-            if (sieve.contains(f)) {
-                for (int m = f*2; m < ceiling; m += f) {
-                    sieve.remove(m);
-                }
+            for (int c = f * 2; c < ceiling; c = c + f) {
+                sieve.remove(c);
             }
         }
 
-        // whatever is left in the set is prime
+        // all composite numbers have now been removed from the sieve
         return sieve;
     }
 
@@ -88,33 +83,53 @@ public class SetPractice {
     public static <E> boolean containsDuplicates(List<E> lst) {
         Set<E> s = new TreeSet<>(lst);
         return s.size() < lst.size();
-
-        Set<E> s1 = new TreeSet<>();
-        for (E elt : lst) {
-            boolean alreadySeen = !s1.add(elt);
-            if (alreadySeen) {
-                return true;
-            }
-        }
-        return false;
     }
 
-    public static <E> void findDuplicates(List<E> lst) {
-        Set<E> seen = new TreeSet<>();
-        ListIterator<E> it = lst.listIterator();
-        while (it.hasNext()) {
-            E elt = it.next();
-            boolean alreadySeen = !seen.add(elt);
-            if (alreadySeen) {
-                System.out.println(String.format("Element %s at %d is a duplicate", elt, it.previousIndex()));
+    public static <E> List<E> findDuplicatesWithoutSets(List<E> lst) {
+        long startTime = System.nanoTime();
+        List<E> duplicates = new LinkedList<>();
+        for (ListIterator<E> it1 = lst.listIterator(); it1.hasNext(); ) {
+            E currElt = it1.next();
+            ListIterator<E> it2 = lst.listIterator(it1.nextIndex());
+            while (it2.hasNext()) {
+                if (it2.next().equals(currElt)) {
+                    duplicates.add(it2.previous());
+                    break;
+                }
             }
         }
+        long timeElapsed = System.nanoTime() - startTime;
+        System.out.println("Execution time without set: " + (timeElapsed / 1_000_000.0) + " ms");
+        return duplicates;
+    }
+
+    public static <E> List<E> findDuplicates(List<E> lst) {
+        long startTime = System.nanoTime();
+        List<E> duplicates = new LinkedList<>();
+        Set<E> seen = new TreeSet<>();
+        for (E elt : lst) {
+            boolean alreadySeen = !seen.add(elt);
+            if(alreadySeen) {
+                duplicates.add(elt);
+            }
+        }
+        long timeElapsed = System.nanoTime() - startTime;
+        System.out.println("Execution time with set: " + (timeElapsed / 1_000_000.0) + " ms");
+        return duplicates;
     }
 
 
 
     public static void main(String[] args) {
-        findPrimes(30);
+        // findPrimes(30);
+        // List<Integer> lst = new LinkedList<>();
+        // Random r = new Random();
+        // for (int i = 0; i < Math.pow(10, 6); i++) {
+        //     lst.add(r.nextInt(10000));
+        // }
+        // System.out.println("There are " + findDuplicates(lst).size() + " duplicates");
+        // System.out.println("There are " + findDuplicatesWithoutSets(lst).size() + " duplicates");
+
     }
 
 }
