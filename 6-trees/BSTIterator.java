@@ -9,16 +9,21 @@ public class BSTIterator<E extends Comparable<E>> implements Iterator<E> {
     }
 
     protected BST<E>.Node whatIsNext() {
-        BST<E>.Node nnd;
-        if (nd.right != null) {         // nd has a right child: next is the leftmost child of its right subtree
-            nnd = nd.right;
-            while (nnd.left != null) nnd = nnd.left;
-            return nnd;
+        BST<E>.Node tnd;
+        // if current nd has a right child, "next" is the leftmost 
+        // element in its right subtree
+        if (nd.right != null) {
+            tnd = nd.right;
+            while (tnd.left != null) tnd = tnd.left;   // move as left as you can
+            return tnd;
         }
-        // nnd has no right child: next is the parent of the first ancestor that is a left child
-        nnd = nd;
-        while (nnd.parent != null && nnd.parent.left != nnd) nnd = nnd.parent;
-        return nnd.parent;
+        // nd does not have a right child
+        tnd = nd;
+        while (tnd.parent != null && tnd == tnd.parent.right) {
+            tnd = tnd.parent;               // move up until tnd is a left child
+        }
+        // tnd is a left child. its parent is either next or null
+        return tnd.parent;
     }
 
     public boolean hasNext() {

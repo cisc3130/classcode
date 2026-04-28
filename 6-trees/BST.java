@@ -20,7 +20,7 @@ public class BST<E extends Comparable<E>> implements Iterable<E> {
 
     public Iterator<E> iterator() {
         Node nd = root;
-        while (nd.left != null) nd = nd.left;
+        while (nd.left != null) nd = nd.left;   // find the smallest node
         return new BSTIterator<E>(nd);
     }
 

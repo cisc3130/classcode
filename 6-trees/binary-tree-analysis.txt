@@ -7,11 +7,11 @@ minimum number of levels = log2(n)
 
 
                 10
-        6              *20*             <- tnd. case 4: tnd has 2 children
-    4       9       5      30
+        8              *20*             <- tnd. case 4: tnd has 2 children
+    4       9       16      30
   2   5                 -25-            <- rnd: leftmost child of right subtree
-                            29
-                           27
+        6                   29
+          7                27
 
 
 
