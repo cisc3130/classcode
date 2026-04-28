@@ -2,79 +2,91 @@ import java.util.*;
 import java.io.*;
 
 public class SpellingBee {
-    String puzzleString;
-    Set<Character> puzzle;
-    Character centerLetter;
-    Set<String> dictionary;
-    Set<String> alreadyFound;
-    int points;
+    private String puzzleString;
+    private Set<Character> puzzleSet;
+    private char centerLetter;
+    private Set<String> dictionary;
+    private int points;
+    private Set<String> alreadyFound;
+    private static final int MIN_LENGTH = 4;
 
-    static final int MIN_LENGTH = 4;
-
-    public SpellingBee(String puzzle) {
-        this.puzzleString = puzzle;
-        this.puzzle = new TreeSet<>();
-        for (char c : puzzle.toCharArray()) this.puzzle.add(c);
-        centerLetter = puzzle.charAt(0);
-
-        dictionary = loadDictionary();
-
-        alreadyFound = new TreeSet<>();
-
-        points = 0;
+    public SpellingBee(String puzzleString) {
+        this.puzzleString = puzzleString;
+        this.puzzleSet = new HashSet<>();
+        for (char c : puzzleString.toCharArray()) puzzleSet.add(c);
+        this.centerLetter = puzzleString.charAt(0);
+        this.dictionary = loadDictionary();
+        this.points = 0;
+        this.alreadyFound = new HashSet<>();
     }
 
-    public static Set<String> loadDictionary() {
+    private static Set<String> loadDictionary() {
         String dictfile = "/workspaces/classcode/words_alpha.txt";
-        Set<String> dictionary = new TreeSet<>();
+        Set<String> dictionary = new HashSet<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(dictfile));
+            File file = new File(dictfile);
+            BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
                 dictionary.add(line.toUpperCase());
             }
             br.close();
-        } catch (IOException e) {
-            System.out.println("Error reading dictionary file: " + e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return dictionary;
     }
 
-    public String score(String word) {
-        int wordLength = word.length();
-        if (wordLength < MIN_LENGTH) return "Too short";
+    private String score(String guess) {
+        String message;
 
-        boolean containsCenterLetter = false;
-        for (char c : word.toCharArray()) {
-            if (!puzzle.contains(c)) return "Bad letters";
-            if (c == centerLetter) containsCenterLetter = true;
-        }
-        if (!containsCenterLetter) return "Missing center letter";
-
-
-        if (alreadyFound.contains(word)) return "Already found";
-
-        // is it a legal word
-        if (!dictionary.contains(word)) { return "Not in word list"; }
-
-        alreadyFound.add(word);
-        int points;
-        String message = "";
-        if (wordLength == MIN_LENGTH) points = 1;
-        else points = wordLength;
-
-        // if it's a pangram, add another 7 points
-        Set<Character> wordChars = new HashSet<>();
-        for (char c : word.toCharArray()) wordChars.add(c);
-        if (wordChars.size() == 7) {
-            points += 7;
-            message = "Pangram! ";
+        if (guess.length() < MIN_LENGTH) {
+            return "Too short";
         }
 
-        this.points += points;
-        return message + points + " points";
-        
+        boolean usedCenterLetter = false;
+        for (char c : guess.toCharArray()) {
+            if (c == centerLetter) usedCenterLetter = true;
+            else {
+                if (!puzzleSet.contains(c)) {
+                    return "Bad letters";
+                }
+            }
+        }
+        if (!usedCenterLetter) {
+            return "Missing center letter";
+        }
+
+        if (!dictionary.contains(guess)) {
+            return "Not in word list";
+        }
+
+        if (!alreadyFound.add(guess)) {
+            return "Already found";
+        }
+
+        // survived all checks: this is a valid guess
+        // now score
+
+        int guessPoints;
+        if (guess.length() == 4) guessPoints = 1;
+        else guessPoints = guess.length();
+
+        Set<Character> guessSet = new TreeSet<>();
+        for (char c : guess.toCharArray()) guessSet.add(c);
+        if (guessSet.size() == puzzleSet.size()) {
+            guessPoints += puzzleSet.size();
+            message = "Pangram! " + guessPoints;
+        } else {
+            message = "" + guessPoints;
+        }
+
+
+        points += guessPoints;
+        return message;
+
     }
+    
 
     public void play() {
         Scanner sc = new Scanner(System.in);
@@ -91,7 +103,7 @@ public class SpellingBee {
     }
 
     public static void main(String[] args) {
-        SpellingBee sb = new SpellingBee("EGIUNTY");
+        SpellingBee sb = new SpellingBee("CINLEMT");
         sb.play();
     }
 }
