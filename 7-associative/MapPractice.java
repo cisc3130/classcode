@@ -1,10 +1,14 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class MapPractice {
 
     Map<String, Long> dictionary;
+    static Map<Character, Integer> charIdxMap;
+
 
     protected static Integer incrementCount(String word, Integer count) {
         if (count == null) {
@@ -14,9 +18,43 @@ public class MapPractice {
         }
     }
 
+    public String caesarCipherLinear(String toEncode, int secret) {
+        long startTime = System.currentTimeMillis();
+        StringBuilder encoded = new StringBuilder();
+        String alphabet = "abcdefghijklmnopqrstuvwxyz";
+        for (char c : toEncode.toCharArray()) {
+            int c_idx = alphabet.indexOf(c);            // indexOf is linear in the alphabet
+            char encoded_c = alphabet.charAt((c_idx + secret) % alphabet.length());
+            encoded.append(encoded_c);
+        }
+        long endTime = System.currentTimeMillis();
+        System.out.println("Linear time: " + (endTime - startTime) + " ms");
+        return encoded.toString();
+    }
+
+    public String caesarCipher(String toEncode, int secret) {
+        long startTime = System.currentTimeMillis();
+        StringBuilder encoded = new StringBuilder();
+        String alphabet = "abcdefghijklmnopqrstuvwxyz";
+        if (charIdxMap == null) {
+            charIdxMap = new HashMap<>();
+            for (int i = 0; i < alphabet.length(); i++) {
+                charIdxMap.put(alphabet.charAt(i), i);
+            }
+        }
+        for (char c : toEncode.toCharArray()) {
+            int c_idx = charIdxMap.get(c);          // get is constant in a hash map
+            char encoded_c = alphabet.charAt((c_idx + secret) % alphabet.length());
+            encoded.append(encoded_c);
+        }
+        long endTime = System.currentTimeMillis();
+        System.out.println("Constant time: " + (endTime - startTime) + " ms");
+        return encoded.toString();
+    }
+
     public Map<String, List<Integer>> buildConcordance(String filename) {
         Map<String, List<Integer>> concordance = new TreeMap<>();
-        BufferedReader reader = new BufferedReader(new FileReader(filename))
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
         String line;
         int lineNumber = 1;
         while ((line = reader.readLine()) != null) {
@@ -67,43 +105,38 @@ public class MapPractice {
         }
     }
 
-    public Map<String, Integer> wordCountBook(String filename) {
-        // count the number of times each word appears in the file
-        Map<String, Integer> wordCounts = new HashMap<>();
-        Scanner sc = new Scanner(filename);
-        while (sc.hasNext()) {
-            String word = sc.next().toLowerCase();
-            // // if the word is already in the map
-            // if (wordCounts.containsKey(word)) {
-            //     // get its value and increment it by 1
-            //     Integer c = wordCounts.get(word);
-            //     wordCounts.put(word, c+1);
-            // } else {
-            //     // put it in with a value of 1
-            //     wordCounts.put(word, 1);
-            // }
-            // // ^ this is three separate searches
+    public Map<String, Integer> wordCountBook(int gutenbergCodeString) {
+        // load book from Project Gutenberg
+        String gutenberg_url = "https://www.gutenberg.org/cache/epub/" + gutenbergCodeString + "/pg" + gutenbergCodeString + ".txt";
 
-            // Integer c = wordCounts.get(word);
-            // if (c != null) wordCounts.put(word, c+1);
-            // else wordCounts.put(word, 1);
-            // // ^ this is two searches
+        Map<String, Integer> wordCount = new HashMap<>();
+        try (Scanner sc = new Scanner(new URL(gutenberg_url).openStream())) {
+            while (sc.hasNext()) {
+                String word = sc.next().toLowerCase().replaceAll("[^a-z]", "");  // remove punctuation
+                
+                // if (wordCount.containsKey(word)) {
+                //     Integer currentCount = wordCount.get(word);
+                //     wordCount.put(word, currentCount + 1);
+                // } else {
+                //     wordCount.put(word, 1);
+                // }   ^ This is inefficient, requires three or two searches
 
-            // // same thing with getOrDefault:
-            // c = wordCounts.getOrDefault(word, 0);
-            // wordCounts.put(word, c+1);
-            // // ^ same two searches but we can avoid the if/else by giving it a default
-            // // value instead of null
+                // Integer currentCount = wordCount.get(word);
+                // if (currentCount == null) {
+                //     wordCount.put(word, 1);
+                // } else {
+                //     wordCount.put(word, currentCount + 1);
+                // }  ^ This is more efficient, eliminates containsKey search, but still requires two searches
 
-            // we can get it down to one search:
-            wordCounts.compute(word, (k, v) -> v == null ? 1 : v+1);
+                // Integer currentCount = wordCount.getOrDefault(word, 0);
+                // wordCount.put(word, currentCount + 1);   ^ This is more efficient, eliminates the branch but still requires two searches
 
-            // wordCounts.compute(word, MapPractice::incrementCount);
-            
-            // // same thing using merge
-            // wordCounts.merge(word, 1, (v1, v2) -> v1 + 1);
+                wordCount.compute(word, (k, v) -> v == null ? 1 : v+1);   // This is the most efficient way, does everything in one search
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
-        return wordCounts;
+        return wordCount;
     }
 
     // protected V complicatedValueMapping(K key, V oldValue) {
@@ -130,26 +163,54 @@ public class MapPractice {
 
 
     public static void main(String[] args) {
-        Map<String, Double> items = new TreeMap<>((s1, s2) -> s1.length() - s2.length());
-        items.put("ruler", 5.99);
-        // items.put("phone", 600.99);
-        items.put("desk", 3999.99);
-        items.put("computer", 1299.99);
+        // Map<String, Double> items = new TreeMap<>();
+        // items.put("ruler", 5.99);
+        // // items.put("phone", 600.99);
+        // items.put("desk", 3999.99);
+        // items.put("computer", 1299.99);
 
-        System.out.println("The cost of a ruler is $" + items.get("ruler"));
+        // System.out.println("The cost of a ruler is $" + items.get("ruler"));
 
-        Double phonePrice = items.get("phone");
-        if (phonePrice == null) System.out.println("We don't sell phones");
-        else System.out.println("The cost of a phone is $" + phonePrice);
+        // Double phonePrice = items.get("phone");
+        // if (phonePrice == null) System.out.println("We don't sell phones");
+        // else System.out.println("The cost of a phone is $" + phonePrice);
 
-        Double newRulerPrice = 6.99;
-        Double oldRulerPrice = items.put("ruler", newRulerPrice);
-        if (oldRulerPrice != null) {
-            System.out.println("Rulers used to cost " + oldRulerPrice + ", now they cost " + newRulerPrice);
+        // Double newRulerPrice = 6.99;
+        // Double oldRulerPrice = items.put("ruler", newRulerPrice);
+        // if (oldRulerPrice != null) {
+        //     System.out.println("Rulers used to cost " + oldRulerPrice + ", now they cost " + newRulerPrice);
+        // }
+
+        // Double oldDeskPrice = items.remove("desk");
+        // System.out.println("We no longer sell desks. They used to cost " + oldDeskPrice);
+        // assert(items.get("desk") == null);
+
+        // String toEncode = "hello";
+        // int secret = 3;
+        // MapPractice mp = new MapPractice();
+        // System.out.println(mp.caesarCipherLinear(toEncode, secret));
+        // System.out.println(mp.caesarCipher(toEncode, secret));  
+
+        // String toEncodeLong = "the quick brown fox jumps over the lazy dog";
+        // System.out.println(mp.caesarCipherLinear(toEncodeLong, secret));
+        // System.out.println(mp.caesarCipher(toEncodeLong, secret));
+
+        MapPractice mp = new MapPractice();
+        Map<String, Integer> frankensteinWordCount = mp.wordCountBook(84);
+        int i = 0;
+        for (Map.Entry<String, Integer> entry : frankensteinWordCount.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+            i++;
+            if (i > 5) break;
         }
-
-        Double oldDeskPrice = items.remove("desk");
-        System.out.println("We no longer sell desks. They used to cost " + oldDeskPrice);
-        assert(items.get("desk") == null);
+        Set<Map.Entry<String, Integer>> frankensteinWordCountEntrySet = frankensteinWordCount.entrySet();
+        Iterator<Map.Entry<String, Integer>> it = frankensteinWordCountEntrySet.iterator();
+        Map.Entry<String, Integer> maxEntry = it.next();
+        for (Map.Entry<String, Integer> entry : frankensteinWordCount.entrySet()) {
+            if (maxEntry == null || maxEntry.getValue().compareTo(entry.getValue()) < 0) {
+                maxEntry = entry;
+            }
+        }
+        System.out.println("The word that appears the most times in Frankenstein is " + maxEntry.getKey());
     }
 }
