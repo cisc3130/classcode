@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 import java.net.MalformedURLException;
@@ -6,9 +7,25 @@ import java.net.URL;
 
 public class MapPractice {
 
-    Map<String, Long> dictionary;
+    static Set<String> dictionary = loadDictionary();
     static Map<Character, Integer> charIdxMap;
 
+    private static Set<String> loadDictionary() {
+        String dictfile = "/workspaces/classcode/words_alpha.txt";
+        Set<String> dictionary = new HashSet<>();
+        try {
+            File file = new File(dictfile);
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                dictionary.add(line.toUpperCase());
+            }
+            br.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dictionary;
+    }
 
     protected static Integer incrementCount(String word, Integer count) {
         if (count == null) {
@@ -105,7 +122,7 @@ public class MapPractice {
         }
     }
 
-    public Map<String, Integer> wordCountBook(int gutenbergCodeString) {
+    public static Map<String, Integer> wordCountBook(int gutenbergCodeString) {
         // load book from Project Gutenberg
         String gutenberg_url = "https://www.gutenberg.org/cache/epub/" + gutenbergCodeString + "/pg" + gutenbergCodeString + ".txt";
 
@@ -136,29 +153,123 @@ public class MapPractice {
         } catch(Exception e) {
             e.printStackTrace();
         }
+
+        // print top five most frequent words in the book
+        wordCount.entrySet().stream()
+            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+            .limit(5)
+            .forEach(System.out::println);
+
         return wordCount;
     }
 
-    // protected V complicatedValueMapping(K key, V oldValue) {
-    //     if (key.startsWith('L') && oldValue > 10) {
-    //         return "hello";
-    //     }
-    // }
+    public static Map<String, Integer> createTitleToGutenbergCodeMap() {
+        return Map.of(
+            "Frankenstein", 84,
+            "Moby Dick", 2701,
+            "Pride and Prejudice", 1342,
+            "Romeo and Juliet", 1513,
+            "Crime and Punishment", 2554,
+            "Alice in Wonderland", 11,
+            "The Count of Monte Cristo", 1184,
+            "Middlemarch", 145
+        );
+    }
+
+    public static void getMostSignificantWords(String title) {
+        // create corpus of word counts of a bunch of books
+        Map<Integer, Map<String, Integer>> allWordCounts = new HashMap<>();
+        for (Integer gutenbergCode : createTitleToGutenbergCodeMap().values()) {
+            allWordCounts.put(gutenbergCode, wordCountBook(gutenbergCode));
+        }
+
+        // get a reference to the word count map of this book
+        Integer thisGutenbergCode = createTitleToGutenbergCodeMap().get(title);
+        Map<String, Integer> thisWordCounts = allWordCounts.get(thisGutenbergCode);
+
+        // get total number of words in the book
+        int totalWordsInBook = thisWordCounts.values().stream()
+            .mapToInt(Integer::intValue)
+            .sum();
+
+        // calculate tf-idf for each word in the book
+        Map<String, Double> thisTfIdf = new HashMap<>();
+        for (Map.Entry<String, Integer> e : thisWordCounts.entrySet()) {
+            double tf = (double) e.getValue() / totalWordsInBook;
+            double numberOfDocumentsContainingWord = allWordCounts.values().stream()
+                .filter(m -> m.containsKey(e.getKey()))
+                .count();
+            double idf = Math.log(allWordCounts.size() / numberOfDocumentsContainingWord);
+            thisTfIdf.put(e.getKey(), tf * idf);
+        }
+
+        // print top five most important words in the book
+        thisTfIdf.entrySet().stream()
+            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+            .limit(5)
+            .forEach(System.out::println);
+    }
+
+    public static void findAnagrams() {
+        Map<String, List<String>> anagramsMap = new HashMap<>();
+        for (String word : dictionary) {
+            // get the sorted string of the word
+            char[] wordChars = word.toCharArray();
+            Arrays.sort(wordChars);
+            String sortedWord = new String(wordChars);
+
+            // if sortedWord is already in the map with an associated list of anagrams,
+            // add word to that list
+            // otherwise, add a new list to the map keyed by sortedWord 
+            // and add word to that list
+            anagramsMap.computeIfAbsent(sortedWord, k -> new LinkedList<>()).add(word);
+        }
+
+        // find the longest word in English that has at least one anagram
+        System.out.println("The longest word in English with at least one anagram is: " + 
+        anagramsMap.entrySet().stream()
+            .filter(e -> e.getValue().size() > 1)
+            .max((e1, e2) -> e1.getKey().length() - e2.getKey().length())
+            .get()
+        );
+
+        // find the largest set of anagrams
+        System.out.println("The largest set of anagrams in English is: " +
+        anagramsMap.values().stream().max((lst1, lst2) -> lst1.size() - lst2.size()).get()
+        );
+    }
+
+
 
 
     public static Map<Integer, Integer> fibMemo = new TreeMap<>();
     public static int fib(int n) {
-        if (n == 0 || n == 1) return 1;
-        // if (fibMemo.containsKey(n)) return fibMemo.get(n);
-        
-        // Integer m = fibMemo.get(n);
-        // if (m != null) return m;
-        // int fibRes = fib(n-1) + fib(n-2);
-        // fibMemo.put(n, fibRes);
-        // return fibRes;
+        if (n == 0) return 0;
+        if (n == 1) return 1;
+        Integer fib_n = fibMemo.get(n);
+        if (fib_n != null) return fib_n;
+        fib_n = fib(n-1) + fib(n-2);
+        fibMemo.put(n, fib_n);
+        return fib_n;
+    }
 
-        Integer fibRes = fibMemo.computeIfAbsent(n, k -> fib(n-1) + fib(n-2));
-        return fibRes;
+    public static Map<String, Boolean> reducibleMemo = new HashMap<>();
+    public static boolean isReducible(String word) {
+        if (word.length() == 0) return true;
+        Boolean reducible = reducibleMemo.get(word);
+        if (reducible != null) return reducible;
+        for (int i = 0; i < word.length(); i++) {
+            StringBuilder sb = new StringBuilder(word);
+            sb.deleteCharAt(i);
+            String new_word = sb.toString();
+            if (!dictionary.contains(new_word)) continue;
+            boolean new_word_is_reducible = isReducible(new_word);
+            if (!new_word_is_reducible) continue;
+            reducibleMemo.put(word, true);
+            return true;
+        }
+        reducibleMemo.put(word, false);
+        return false;
     }
 
 
@@ -195,22 +306,23 @@ public class MapPractice {
         // System.out.println(mp.caesarCipherLinear(toEncodeLong, secret));
         // System.out.println(mp.caesarCipher(toEncodeLong, secret));
 
-        MapPractice mp = new MapPractice();
-        Map<String, Integer> frankensteinWordCount = mp.wordCountBook(84);
-        int i = 0;
-        for (Map.Entry<String, Integer> entry : frankensteinWordCount.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-            i++;
-            if (i > 5) break;
-        }
-        Set<Map.Entry<String, Integer>> frankensteinWordCountEntrySet = frankensteinWordCount.entrySet();
-        Iterator<Map.Entry<String, Integer>> it = frankensteinWordCountEntrySet.iterator();
-        Map.Entry<String, Integer> maxEntry = it.next();
-        for (Map.Entry<String, Integer> entry : frankensteinWordCount.entrySet()) {
-            if (maxEntry == null || maxEntry.getValue().compareTo(entry.getValue()) < 0) {
-                maxEntry = entry;
-            }
-        }
-        System.out.println("The word that appears the most times in Frankenstein is " + maxEntry.getKey());
+
+        // System.out.println("Frankenstein: ");
+        // getMostSignificantWords("Frankenstein");
+        // System.out.println("Alice in Wonderland: ");
+        // getMostSignificantWords("Alice in Wonderland");
+
+        
+
+
+        // System.out.println(isReducible("sprite"));
+
+        // dictionary.stream()
+        //     .filter(MapPractice::isReducible)
+        //     .sorted((w1, w2) -> w2.length() - w1.length())
+        //     .limit(5)
+        //     .forEach(System.out::println);
+
+        findAnagrams();
     }
 }

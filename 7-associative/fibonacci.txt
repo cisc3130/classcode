@@ -1,0 +1,22 @@
+0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 
+
+fib(n) = {
+    n = 0:  0,
+    n = 1:  1,
+    else:   fib(n-1) + fib(n-2)
+}
+
+
+
+fib(4) = fib(3) + fib(2)
+fib(3) = fib(2) + fib(1) = 2
+fib(2) = fib(1) + fib(0) = 1
+fib(1) = 1
+fib(0) = 0
+fib(1) = 1
+fib(3) = fib(2) + fib(1) = 2
+fib(2) = fib(1) + fib(0) = 1
+fib(1) = 1
+fib(0) = 0
+fib(1) = 1
+fib(2) = fib(1) + fib(0)
