@@ -19,55 +19,52 @@ public class HashTable<E> {
         this.data = (E[]) new Object[initialCapacity];
         this.targetLoadFactor = loadFactor;
         DELETED = (E) new Object();
+        size = 0;
     }
 
     private void grow() {
         int newCapacity = data.length * 2 + 1;
-        E[] newData = (E[]) new Object[newCapacity];
-        for (E elt : data) {
+        E[] oldData = data;
+        this.data = (E[]) new Object[newCapacity];
+        for (E elt : oldData) {
             if (elt != null && !elt.equals(DELETED)) {
                 int idx = probe(elt);
-                newData[idx] = elt;
+                this.data[idx] = elt;
             }
         }
-        data = newData;
     }
 
     private int probe(E elt) {
-        int hash = elt.hashCode();
-        int start_idx = hash % data.length;
-        int idx = start_idx;
-        int first_deleted_idx = -1;
-        while (data[idx] != null && !data[idx].equals(elt) ) {
-            if (data[idx].equals(DELETED) && first_deleted_idx < 0) first_deleted_idx = idx;
-            idx = (idx + 1) % data.length;
-            // if (idx == start_idx) return -1;             // this should never happen
-        }
-        if (first_deleted_idx >= 0) {
-            if (data[idx] != null) {
-                data[first_deleted_idx] = data[idx];
-                data[idx] = DELETED;
+        // elt --> hashCode --> idx
+        int hashCode = elt.hashCode();
+        int idx = hashCode % this.data.length;
+        int firstDeletedIdx = -1;
+        while (data[idx] != null && !data[idx].equals(elt)) {
+            if (data[idx] == DELETED && firstDeletedIdx == -1) {
+                firstDeletedIdx = idx;
             }
-            idx = first_deleted_idx;
+            idx = (idx + 1) % this.data.length;
         }
+        if (firstDeletedIdx != -1 && this.data[idx].equals(elt)) {
+            this.data[firstDeletedIdx] = elt;
+            this.data[idx] = DELETED;
+        }
+        if (firstDeletedIdx != -1) return firstDeletedIdx;
         return idx;
     }
 
     public boolean add(E elt) {
-        if ((size / data.length) >= targetLoadFactor) grow();
+        if (size/data.length >= targetLoadFactor) grow();
         int idx = probe(elt);
-        if (data[idx] == null || data[idx].equals(DELETED)) {
-            data[idx] = elt;
-            size++;
-            return true;
-        } else {
-            return false;
-        }
+        if (this.data[idx] != null && this.data[idx] != DELETED) return false;
+        this.data[idx] = elt;
+        this.size++;
+        return true;
     }
 
     public boolean contains(E elt) {
         int idx = probe(elt);
-        return (data[idx] != null) && !data[idx].equals(DELETED);
+        return this.data[idx] != null && this.data[idx] != DELETED;
     }
 
     public boolean remove(E elt) {

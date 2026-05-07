@@ -24,20 +24,21 @@ public class ChainedHashTable<E> {
     }
 
     private ListIterator<E> probe(E elt) {
-        int hash = elt.hashCode();
-        int idx = hash % data.length;
-        if (data[idx] == null)  {                           // lazy strategy: create a new list only when needed
-            data[idx] = (LinkedList<E>) new LinkedList();
-            return data[idx].listIterator();
+        int hashCode = elt.hashCode();
+        int idx = hashCode % data.length;
+        if (data[idx] == null) {                // lazy initialization: only create a bin when you need it
+            data[idx] = new LinkedList<>();     // use LinkedList for bins for space and removal efficiency
         }
-        ListIterator<E> it = data[idx].listIterator();
+        List<E> bin = data[idx];
+        ListIterator<E> it = bin.listIterator();
         while (it.hasNext()) {
-            E nextElt = it.next();
-            if (nextElt.equals(elt)) {
-                it.previous();    // move iterator back so it's before the element we're looking for
-                return it;
+            if (it.next().equals(elt)) {
+                it.previous();
+                break;
             }
         }
+        // it is either at the end of the list (if elt is not in the list)
+        // or it's at the position where next() will return elt and elt is lastReturned
         return it;
     }
 

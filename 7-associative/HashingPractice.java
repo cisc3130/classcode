@@ -10,6 +10,10 @@ public class HashingPractice {
         this.numDrawers = numDrawers;
     }
 
+    public boolean equals(Desk other) {
+        return this.material.equals(other.material) && this.numDrawers.equals(other.numDrawers);
+    }
+
 }
     public static void main(String[] args) {
         Integer x = 75, y = 35, z = 2, x2 = 75;
@@ -27,12 +31,12 @@ public class HashingPractice {
         System.out.println(goodbye.hashCode());
         System.out.println(computer.hashCode());
 
-        // Desk d1 = new Desk("oak", 3);
-        // Desk d2 = new Desk("pine", 4);
-        // Desk d3 = new Desk("oak", 3);
-        // System.out.println(d1.hashCode());
-        // System.out.println(d2.hashCode());
-        // System.out.println(d3.hashCode());
+        Desk d1 = new HashingPractice().new Desk("oak", 3);
+        Desk d2 = new HashingPractice().new Desk("pine", 4);
+        Desk d3 = new HashingPractice().new Desk("oak", 3);
+        System.out.println(d1.hashCode());
+        System.out.println(d2.hashCode());
+        System.out.println(d3.hashCode());
 
 
 
