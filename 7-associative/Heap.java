@@ -35,8 +35,7 @@ public class Heap<E extends Comparable<E>> {
 
     public E poll() {
         // swap first and last element
-        E firstElt = data.get(0);
-        data.set(0, data.get(data.size()-1);
+        E firstElt = data.set(0, data.get(data.size()-1));
         data.set(data.size()-1, firstElt);
 
         // remove the last element
@@ -49,15 +48,16 @@ public class Heap<E extends Comparable<E>> {
 
     // fix a heap that is correct except for the last element
     protected void heapifyUp() {
-        int idx = data.size()-1;
-        E newElt = data.get(idx);     // this is the new element that was just added to the end of the array list
-        // we loop as long as idx is greater than 0 (the root doesn't have any parent)
-        // or as long as its parent is smaller than it
-        while (idx > 0 && data.get(parentIdx(idx)).compareTo(newElt) < 1) {
-            data.set(idx, data.get(parentIdx(idx)));    // copy the smaller parent down
-            idx = parentIdx(idx);                       // advance the iteration by moving idx up to the parent idx
-        }
-        data.set(idx, newElt);      // idx is now either 0 (root) or at a location where the parent is larger than newElt
+       int newIdx = data.size()-1;
+       E newElt = data.get(newIdx);
+       // loop as long as it has a parent that is smaller than it
+       while (newIdx > 0 && newElt.compareTo(data.get(parentIdx(newIdx))) > 0) {
+            // move the parent down
+            data.set(newIdx, data.get(parentIdx(newIdx)));
+            // move newIdx up
+            newIdx = parentIdx(newIdx); 
+       }
+       data.set(newIdx, newElt);
     }
 
     // fix a heap that is correct except for given index
