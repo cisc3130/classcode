@@ -2,7 +2,7 @@ import java.util.*;
 
 public class HeapSort<E extends Comparable<E>> {
 
-    public static void sort(ArrayList<E> data) {
+    public void sort(ArrayList<E> data) {
         buildHeap(data);
         for (int i = data.size()-1; i > 0; i--) {
             // swap the first (largest) and next to last element
@@ -21,21 +21,21 @@ public class HeapSort<E extends Comparable<E>> {
     }
   
     // fix a heap that is correct except for the last element
-    protected static void heapifyUp(ArrayList<E> data) {
+    protected void heapifyUp(ArrayList<E> data) {
         E newElt = data.get(data.size()-1);
         int idx = data.size()-1, pidx = parentIdx(idx);
         while (pidx >= 0 && data.get(pidx).compareTo(newElt) < 0) {        // loop while the parent is smaller than the child
             data.set(idx, data.get(pidx));
             idx = pidx;
-            pidx = parentIndex(idx);
+            pidx = parentIdx(idx);
         }
         data.set(idx, newElt);
     }
 
     // fix a heap that is correct except for given index
-    protected static void heapifyDown(ArrayList<E> data, int i, int end) {
+    protected void heapifyDown(ArrayList<E> data, int i, int end) {
         E newElt = data.get(i);
-        int idx = i, lidx = leftIndex(i), ridx = rightIndex(i);
+        int idx = i, lidx = leftChildIdx(i), ridx = rightChildIdx(i);
         boolean hasBadLeftChild = (lidx < end) && (data.get(lidx).compareTo(newElt) > 0),
             hasBadRightChild = (ridx < end) && (data.get(ridx).compareTo(newElt) > 0);
         while (hasBadLeftChild || hasBadRightChild) {
@@ -47,14 +47,14 @@ public class HeapSort<E extends Comparable<E>> {
                 idx = ridx;
             } else {
                 if (data.get(lidx).compareTo(data.get(ridx)) > 0) {
-                    data.set(idx, data.get(lidx);
+                    data.set(idx, data.get(lidx));
                     idx = lidx;
                 } else {
-                    data.set(idx, data.get(ridx);
+                    data.set(idx, data.get(ridx));
                     idx = ridx;
                 }
             }
-            lidx = leftIndex(idx), ridx = rightIndex(idx);
+            lidx = leftChildIdx(idx); ridx = rightChildIdx(idx);
             hasBadLeftChild = (lidx < end) && (data.get(lidx).compareTo(newElt) > 0),
             hasBadRightChild = (ridx < end) && (data.get(ridx).compareTo(newElt) > 0);
         }
@@ -65,7 +65,7 @@ public class HeapSort<E extends Comparable<E>> {
     // heapifyDown takes log(n) time
     // we call it n/2 times
     // so buildHeap takes n log(n) time
-    protected static void buildHeap(ArrayList<E> data) {
+    protected void buildHeap(ArrayList<E> data) {
         int i = data.size()/2;
         while (i >= 0) {
             heapifyDown(data, i, data.size());
